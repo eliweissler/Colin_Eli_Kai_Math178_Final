@@ -2,8 +2,10 @@ Papers and notes
 
 https://github.com/ni79ls/har-keras-coreml 
 - example of deep neural network trained and tested on the wisdm dataset (jacky email)
+-- wisdm dataset is accelerometer data only
 - the jupyter notebook runs and produces 75% accuracy for activity determination. (coremltools I couldn't use, and any instances of 'acc' need to be changed to 'accuracy', but everything worked other than that)
-- perhaps we can just modify the code to work on our data?
+- perhaps we can just modify the notebook to work on our dataset
+
 
 Human Activity Recognition Using Accelerometer, Gyroscope and Magnetometer
 Sensors: Deep Neural Network Approaches
