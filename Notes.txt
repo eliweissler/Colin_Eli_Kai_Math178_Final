@@ -3,9 +3,58 @@ Papers and notes
 https://github.com/ni79ls/har-keras-coreml 
 - example of deep neural network trained and tested on the wisdm dataset (jacky email)
 -- wisdm dataset is accelerometer data only
+
 - the jupyter notebook runs and produces 75% accuracy for activity determination. (coremltools I couldn't use, and any instances of 'acc' need to be changed to 'accuracy', but everything worked other than that)
-- perhaps we can just modify the notebook to work on our dataset
+
+- idea: perhaps we can just modify the notebook to work on our dataset
 
 
 Human Activity Recognition Using Accelerometer, Gyroscope and Magnetometer
 Sensors: Deep Neural Network Approaches
+- used the following classifiers / deep learning approaches on their dataset
+-- Random Forest, Support Vector Machine, Naive Bayes, Multilayer Perceptron, Deep Convolutional Neural Network and Long-Short Term Memory.
+
+- data: Accelerometer, Gyroscope, Magnetometer and Electrocardiogram
+
+- types of pre-processing: PCA, low pass filter
+
+- types of data cleaning
+-- removing bad labels: sometimes data was marked as movement even though no movement occurred
+--- seems like a dataset specific problem? Don't know how we could infer these bad data labeled
+-- class balancing: give the model equal amount of data for each activity
+--- we should look into this for our dataset, if it is skewed towards a single activity
+
+- Results: page 5
+-- removing the poorly labeled data gives the best result:
+--- PCA, low pass, class balancing, all performed worse...
+--- idea: maybe just throw our unprocessed data into the classifiers / DNN approaches?
+
+Hand-crafted Features vs Residual Networks for Human Activities Recognition using Accelerometer
+- experimented on multiple datasets, including our motion sense one
+
+- result: Residual Networks (deep learning) perform better than using traditional ML methods
+-- traditional methods: k-NN and SVM
+--- features: raw accelerometer data, magnitude of accelerometer data, features based on raw, features based on magnitude
+
+- Residual Networks: https://en.wikipedia.org/wiki/Residual_neural_network
+-- Residual neural networks allow for jumping between layers. Typical ResNet models are implemented with double- or triple- layer skips that contain nonlinearities (ReLU) and batch normalization in between.
+-- skipping layers avoids the problem of vanishing gradients
+--- vanishing gradients: usually neural networks update their weights based on the partial derivatives of the error function and the current weight
+---- sometimes the gradient is too small, so the weight doesn't change it value, which can prevent the network from continuing its training
+-- the skipped layers are filled in as the networks learns more about the feature space
+-- "Towards the end of training, when all layers are expanded, it stays closer to the manifold and thus learns faster. A neural network without residual parts explores more of the feature space. This makes it more vulnerable to perturbations that cause it to leave the manifold, and necessitates extra training data to recover."
+--- the word manifold!!!
+
+- idea: we can do the same comparison as this paper:
+-- raw vs features for traditional classifiers vs DNN
+--- perhaps the point of this class is to show that that traditional classifiers rely on linear data, and that DNN's can find their way around this? 
+-- this is the second paper where a DNN just does so much better than a traditional ML.
+
+
+
+
+
+
+
+
+
