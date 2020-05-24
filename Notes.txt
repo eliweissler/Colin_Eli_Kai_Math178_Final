@@ -45,6 +45,8 @@ Hand-crafted Features vs Residual Networks for Human Activities Recognition usin
 -- "Towards the end of training, when all layers are expanded, it stays closer to the manifold and thus learns faster. A neural network without residual parts explores more of the feature space. This makes it more vulnerable to perturbations that cause it to leave the manifold, and necessitates extra training data to recover."
 --- the word manifold!!!
 
+- traditional methods: 70% training, 20% validation, and 10% test
+
 - idea: we can do the same comparison as this paper:
 -- raw vs features for traditional classifiers vs DNN
 --- perhaps the point of this class is to show that that traditional classifiers rely on linear data, and that DNN's can find their way around this? 
