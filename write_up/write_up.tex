@@ -14,7 +14,7 @@
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[hidelinks=true]{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -22,9 +22,12 @@
 \usepackage{microtype}      % microtypography
 \usepackage[USenglish]{babel}
 \usepackage{physics}
+\usepackage{siunitx}
+\usepackage[labelfont=bf]{caption}
+\usepackage{todonotes}
 
 
-\title{Formatting instructions for NIPS 2016}
+\title{Human Activity Prediction on Nonlinear Manifolds}
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -38,17 +41,26 @@
 
 \author{
   Colin M. Adams\thanks{All authors contributed equally. The names are ordered alphabetically.} \\
-  \texttt{cadams@arete.com} \\
+   Detection \& Estimation\\
+   Aret\'e Associates\\
+   Northridge, CA 91324 \\
+   \texttt{cadams@arete.com}
+
   %% examples of more authors
   \And
   Kai S. Kaneshina \\
-  \texttt{kkaneshina@arete.com} \\\\
    Detection \& Estimation\\
    Aret\'e Associates\\
-   Northridge, CA 91324
+   Northridge, CA 91324 \\
+   \texttt{kkaneshina@arete.com} 
+   %comment below to be less cheeky
   \And
   Eli J. Weissler \\
-  \texttt{eweissler@arete.com} 
+   Detection \& Estimation\\
+   Aret\'e Associates\\
+   Northridge, CA 91324 \\
+   \texttt{eweissler@arete.com}
+   %comment below to be less cheeky
 }
 
 \begin{document}
@@ -60,11 +72,21 @@
   \input{sections/abstract/abtract}
 \end{abstract}
 
-\section{Submission of papers to NIPS 2016}
+\section{Progress Report}
+\textbf{Instructions from the course website say:}\\
+{\itshape Submit the progress report detailing your progress towards your goal. Typed (LaTeX) summarizing your literature search, specifying what data sets you are using, and what methods you are applying. The write-up should be 3 to 5 pages for a 1 person group, 6 to 8 pages for a 2 person group and 8 to 10 for a 3 person group. }
+
+
+\section{Introduction}
   \input{sections/intro/intro}
 
-\section{Game Plan}
+\section{The Game Plan}
+\label{sec:game_plan}
   \input{sections/plan/plan}
+
+\section{Our Data}
+\label{sec:data}
+  \input{sections/data/data}
 
 
 \section{Citations, figures, tables, references}
@@ -137,8 +159,9 @@ captions and the paper body to be legible if the paper is printed in
 either black/white or in color.
 \begin{figure}[h]
   \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+  \missingfigure{We would put a figure here of xyz}
   \caption{Sample figure caption.}
+  \label{fig:example}
 \end{figure}
 
 \subsection{Tables}
@@ -168,7 +191,7 @@ This package was used to typeset Table~\ref{sample-table}.
     \toprule
     \multicolumn{2}{c}{Part}                   \\
     \cmidrule{1-2}
-    Name     & Description     & Size ($\mu$m) \\
+    \textbf{Name}     & \textbf{Description}     & \textbf{Size} (\si{\micro\m}) \\
     \midrule
     Dendrite & Input terminal  & $\sim$100     \\
     Axon     & Output terminal & $\sim$10      \\
@@ -177,104 +200,17 @@ This package was used to typeset Table~\ref{sample-table}.
   \end{tabular}
 \end{table}
 
-\section{Final instructions}
-
-Do not change any aspects of the formatting parameters in the style
-files.  In particular, do not modify the width or length of the
-rectangle the text should fit into, and do not change font sizes
-(except perhaps in the \textbf{References} section; see below). Please
-note that pages should be numbered.
-
-\section{Preparing PDF files}
-
-Please prepare submission files with paper size ``US Letter,'' and
-not, for example, ``A4.''
-
-Fonts were the main cause of problems in the past years. Your PDF file
-must only contain Type 1 or Embedded TrueType fonts. Here are a few
-instructions to achieve this.
-
-\begin{itemize}
-
-\item You should directly generate PDF files using \verb+pdflatex+.
-
-\item You can check which fonts a PDF files uses.  In Acrobat Reader,
-  select the menu Files$>$Document Properties$>$Fonts and select Show
-  All Fonts. You can also use the program \verb+pdffonts+ which comes
-  with \verb+xpdf+ and is available out-of-the-box on most Linux
-  machines.
-
-\item The IEEE has recommendations for generating PDF files whose
-  fonts are also acceptable for NIPS. Please see
-  \url{http://www.emfield.org/icuwb2010/downloads/IEEE-PDF-SpecV32.pdf}
-
-\item \verb+xfig+ "patterned" shapes are implemented with bitmap
-  fonts.  Use "solid" shapes instead.
-
-\item The \verb+\bbold+ package almost always uses bitmap fonts.  You
-  should use the equivalent AMS Fonts:
-\begin{verbatim}
-   \usepackage{amsfonts}
-\end{verbatim}
-followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or
-\verb+\mathbb{C}+ for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You
-can also use the following workaround for reals, natural and complex:
-\begin{verbatim}
-   \newcommand{\RR}{I\!\!R} %real numbers
-   \newcommand{\Nat}{I\!\!N} %natural numbers
-   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
-\end{verbatim}
-Note that \verb+amsfonts+ is automatically loaded by the
-\verb+amssymb+ package.
-
-\end{itemize}
-
-If your file contains type 3 fonts or non embedded TrueType fonts, we
-will ask you to fix it.
-
-\subsection{Margins in \LaTeX{}}
-
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+ from the \verb+graphicx+ package. Always
-specify the figure width as a multiple of the line width as in the
-example below:
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-See Section 4.4 in the graphics bundle documentation
-(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
-
-A number of width problems arise when \LaTeX{} cannot properly
-hyphenate a line. Please give LaTeX hyphenation hints using the
-\verb+\-+ command when necessary.
 
 \subsubsection*{Acknowledgments}
 
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments go at the end of the paper. Do not include
-acknowledgments in the anonymized submission, only in the final paper.\cite{dyson1970correlations}
-
-
-
-
-
-
+We would like to thank people. Probably our lord and savior Prof.\ Gu for teaching us everything we know about nonlinear data analysis.\cite{dyson1970correlations}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%%% REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-References follow the acknowledgments.\cite{} Use unnumbered first-level
-heading for the references. Any choice of citation style is acceptable
-as long as you are consistent. It is permissible to reduce the font
-size to \verb+small+ (9 point) when listing the references. {\bf
-  Remember that you can use a ninth page as long as it contains
-  \emph{only} cited references.}
-
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{biblio}
 
 
