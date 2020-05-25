@@ -58,5 +58,13 @@ Hand-crafted Features vs Residual Networks for Human Activities Recognition usin
 
 
 
+The MobiAct Dataset: Recognition of Activities of Daily Living using Smartphones 
+(https://pdfs.semanticscholar.org/dd87/fcfda2e555ba3e1772526a695adcdc88c57f.pdf)
+
+-They do a big summary of other human activity regognition efforts
+	-Datasets and trials are not comparable, need a reference dataset. Hence MobiAct
+-MobiAct is based off MobiFall dataset for fall detection, 54 subjects, nine different activities of daily life.
+-They do a 10-fold cross validated classifier, and are able to achieve 99.88% accuracy with a 5s window size and 80% overlap
+	-however no effort is done to seperate overlapping points during testing/training :/
 
 
