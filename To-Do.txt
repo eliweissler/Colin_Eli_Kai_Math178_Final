@@ -1,16 +1,21 @@
 Goal: predict activity someone is doing (regardless of user)
 
+compare naive to correctly mapped approach
+
 To Do List:
-download and preprocess mobi-act dataset
-- how many data points
+
+feature vectors:
+- script now exists in repo, pickled vectors and labels are in the drive
+
+Naive Approaches:
+- Colin is working on them with the feature vectors
+-- SVM is "done"
 
 try Naive Approaches, as shown in the paper (Hand-crafted Features vs Residual Networks for Human Activities Recognition using Accelerometer)
-- SVM on raw data, results should be similar to paper
+- SVM and k-NN on raw data, results should be similar to paper
 - trees classifier on raw data: not in the paper, but would be interesting
-
-try to find the DNN code used for the paper
-- if this fails, use the jupyter notebook network, record the results
-- hopefully enough close to the paper..
+-- paper creates 3 (ax, ay, az) vectors for the accelerometer data with 128 samples. there is 50% overlap between the segments of 128 data points.
+--- ex: feature 1: minute 1 to minute 5. feature 2: minute 3 to minute 7. etc...
 
 figure out how to map to tangent plane correctly
 - option 1: mapping the data to the plane, testing with our classifiers in the plane, get results 
@@ -18,6 +23,8 @@ figure out how to map to tangent plane correctly
 -- map the model back to the manifold, so that way all future data doesn't need to be mapped
 --- don't know if this is possible...
 
+
+stretch goals:
+re-wire the DNN jupyter notebook for our the motion sense dataset
 fundamental limit of deep learning:
-- stretch goal
 - number of data points needed vs performance
