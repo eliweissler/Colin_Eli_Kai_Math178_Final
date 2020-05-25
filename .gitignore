@@ -4,6 +4,11 @@
 .ipynb_checkpoints
 .fls
 .gz
-
+.synctex.gz(busy)
+.fdb_latexmk
+.bbl
+.blg
+.fdb_latexmk
+.out
 
 
