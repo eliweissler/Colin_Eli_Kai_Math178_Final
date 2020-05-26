@@ -4,14 +4,18 @@ compare naive to correctly mapped approach
 
 To Do List:
 
+combine train and test data sets for motion sense, add in user column 
+
+find other datasets and start scraping them together.
+- Kai is working on the UCI ADL HAR dataset.
+- we can also use the mobi act dataset, but we will have to resample it...
+-- is this worth it or should we just use 2 for the time being..
+
 Naive Approach
 - trees
 - SVM and k-NN are done 
 
 Set up script to do train/test on data based on user.
-
-Fix overleaf - update it 
-
 
 figure out how to map to tangent plane correctly
 - option 1: mapping the data to the plane, testing with our classifiers in the plane, get results 
@@ -27,8 +31,5 @@ fundamental limit of deep learning:
 
 
 writing:
-- add in naive approach verification processes.
--- elaborate more on the hand crafted features paper in our explanation.
--- got within an std of their results so good enough
-- add in goal of robustness
--- combining multiple datasets for train/testing
+- how datasets were combined
+- background on datasets 
