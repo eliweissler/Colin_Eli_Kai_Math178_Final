@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  25 MAY 2020 11:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  25 MAY 2020 17:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2454,11 +2454,11 @@ Package microtype Info: Loading generic settings for font family
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 70.
 
-(./sections/abstract/abtract.tex) (./sections/intro/intro.tex)
-(./sections/plan/plan.tex [1
+(./sections/abstract/abtract.tex) (./sections/intro/intro.tex [1
 
 
-{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
+(./sections/plan/plan.tex
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 6.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
@@ -2475,9 +2475,13 @@ Overfull \hbox (2.0pt too wide) in paragraph at lines 161--162
  [] 
  []
 
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[3]
 LaTeX Font Info:    Try loading font information for TS1+ptm on input line 193.
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 Package microtype Info: Loading generic settings for font family
@@ -2515,7 +2519,7 @@ Package microtype Warning: Unknown slot number of character
 (microtype)                in font encoding `TS1' in protrusion list
 (microtype)                `textcomp'.
 
-(./write_up.bbl [3]) [4]
+(./write_up.bbl) [4]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 216.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 216.
  (./write_up.aux)
@@ -2526,11 +2530,11 @@ Package rerunfilecheck Info: File `write_up.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 216.
  ) 
 Here is how much of TeX's memory you used:
- 30563 strings out of 493014
- 595943 string characters out of 6133351
- 648949 words of memory out of 5000000
- 33512 multiletter control sequences out of 15000+600000
- 44957 words of font info for 135 fonts, out of 8000000 for 9000
+ 30579 strings out of 493014
+ 596167 string characters out of 6133351
+ 648964 words of memory out of 5000000
+ 33515 multiletter control sequences out of 15000+600000
+ 45382 words of font info for 143 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,14n,77p,10404b,982s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/t
@@ -2544,10 +2548,10 @@ texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2016/te
 xmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/f
 onts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /urw/times/utmri8a.pfb>
-Output written on write_up.pdf (4 pages, 129781 bytes).
+Output written on write_up.pdf (4 pages, 131324 bytes).
 PDF statistics:
- 132 PDF objects out of 1000 (max. 8388607)
- 115 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
+ 136 PDF objects out of 1000 (max. 8388607)
+ 119 compressed objects within 2 object streams
+ 28 named destinations out of 1000 (max. 500000)
  26197 words of extra memory for PDF output out of 29859 (max. 10000000)
 

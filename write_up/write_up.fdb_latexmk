@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex write_up"] 1590432430 "write_up.aux" "write_up.bbl" "write_up" 1590432507
+["bibtex write_up"] 1590453971 "write_up.aux" "write_up.bbl" "write_up" 1590453973
   "/usr/local/texlive/2016/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "biblio.bib" 1590431973 2341 b256b0c2ca5d33cedbd62ed93ab3fcf1 ""
-  "write_up.aux" 1590432507 2778 cad0b469ed4ff0be585bab69ce1ba7fd ""
+  "biblio.bib" 1590433218 2652 b67c878e7c1b91398172ae080d3f9c26 ""
+  "write_up.aux" 1590453973 2918 0f47d3decf41b69444e49ed930bf8a45 ""
   "write_up.bcf" 0 -1 0 ""
   (generated)
-  "write_up.blg"
   "write_up.bbl"
-["pdflatex"] 1590432505 "write_up.tex" "write_up.pdf" "write_up" 1590432507
+  "write_up.blg"
+["pdflatex"] 1590453971 "write_up.tex" "write_up.pdf" "write_up" 1590453973
   "/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
@@ -208,14 +208,14 @@
   "nips_2016.sty" 1590343174 10346 58fead2350be7a168bb36a76459b06d3 ""
   "sections/abstract/abtract.tex" 1590427737 83 6304bc411287b1643e3d1eda4f1f4253 ""
   "sections/data/data.tex" 1590427737 45 d2a02d7fed850c63ab158171c6bda4d4 ""
-  "sections/intro/intro.tex" 1590432501 2210 2f74956d38ad1ff70318420708eca688 ""
+  "sections/intro/intro.tex" 1590453942 3929 ee23567b2a73c8ba5fde602e23fff98f ""
   "sections/plan/plan.tex" 1590427737 1378 ae829d53be8de952249ab5d52b0d6032 ""
-  "write_up.aux" 1590432507 2778 cad0b469ed4ff0be585bab69ce1ba7fd ""
-  "write_up.bbl" 1590432430 1054 0c4997f53abbd7f61808517d08e0e895 "bibtex write_up"
-  "write_up.out" 1590432507 504 c07130837ca2c420d2fdc4cb6ccfe029 ""
+  "write_up.aux" 1590453973 2918 0f47d3decf41b69444e49ed930bf8a45 ""
+  "write_up.bbl" 1590453971 1167 f365bcc3a2477d54a9bce4004a8fa584 "bibtex write_up"
+  "write_up.out" 1590453973 504 c07130837ca2c420d2fdc4cb6ccfe029 ""
   "write_up.tex" 1590432261 7076 369c84668a2778a3bc8b122756fc1303 ""
   (generated)
+  "write_up.log"
   "write_up.aux"
   "write_up.out"
-  "write_up.log"
   "write_up.pdf"

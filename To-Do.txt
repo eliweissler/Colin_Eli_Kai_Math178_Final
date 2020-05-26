@@ -4,18 +4,14 @@ compare naive to correctly mapped approach
 
 To Do List:
 
-feature vectors:
-- script now exists in repo, pickled vectors and labels are in the drive
+Naive Approach
+- trees
+- SVM and k-NN are done 
 
-Naive Approaches:
-- Colin is working on them with the feature vectors
--- SVM is "done"
+Set up script to do train/test on data based on user.
 
-try Naive Approaches, as shown in the paper (Hand-crafted Features vs Residual Networks for Human Activities Recognition using Accelerometer)
-- SVM and k-NN on raw data, results should be similar to paper
-- trees classifier on raw data: not in the paper, but would be interesting
--- paper creates 3 (ax, ay, az) vectors for the accelerometer data with 128 samples. there is 50% overlap between the segments of 128 data points.
---- ex: feature 1: minute 1 to minute 5. feature 2: minute 3 to minute 7. etc...
+Fix overleaf - update it 
+
 
 figure out how to map to tangent plane correctly
 - option 1: mapping the data to the plane, testing with our classifiers in the plane, get results 
@@ -28,3 +24,11 @@ stretch goals:
 re-wire the DNN jupyter notebook for our the motion sense dataset
 fundamental limit of deep learning:
 - number of data points needed vs performance
+
+
+writing:
+- add in naive approach verification processes.
+-- elaborate more on the hand crafted features paper in our explanation.
+-- got within an std of their results so good enough
+- add in goal of robustness
+-- combining multiple datasets for train/testing

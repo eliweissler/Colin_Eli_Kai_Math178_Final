@@ -13,11 +13,15 @@ Anna Ferrari, Daniela Micucci, Marco Mobilio, and Paolo Napoletano.
   recognition using accelerometer.
 \newblock pages 153--156, 2019.
 
+\bibitem{malekzadeh2018protecting}
+Mohammad Malekzadeh, Richard~G Clegg, Andrea Cavallaro, and Hamed Haddadi.
+\newblock Protecting sensory data against sensitive inferences.
+\newblock pages 1--6, 2018.
+
 \bibitem{he2016deep}
 Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
 \newblock Deep residual learning for image recognition.
-\newblock In {\em Proceedings of the IEEE conference on computer vision and
-  pattern recognition}, pages 770--778, 2016.
+\newblock pages 770--778, 2016.
 
 \bibitem{dyson1970correlations}
 Freeman~J Dyson.
