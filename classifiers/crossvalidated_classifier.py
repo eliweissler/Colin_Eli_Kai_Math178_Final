@@ -100,7 +100,7 @@ class Classifier:
         """
         #concatenate all of the data together
         if len(self.data) > 1:
-            all_data = pd.concat(self.data, axis=0, ignore_axis=True, copy=False)
+            all_data = pd.concat(self.data, axis=0, ignore_index=True, copy=False)
         elif len(self.data) == 1:
             all_data = self.data[0]
         else:
@@ -108,7 +108,7 @@ class Classifier:
         
         #select columns
         y = all_data['label'].values
-        groups = all_data['user'].values
+        groups = all_data[split_col].values
         
         if cols is None:
             cols_ = [c for c in all_data.columns if c not in ['label','dataset','user']]
@@ -124,6 +124,8 @@ class Classifier:
                                 return_train_score=False,
                                 return_estimator=True, n_jobs=2)
         
+        # scores are in the order of the groups, so the first row out is the
+        # result of training on the other groups, and testing on the first group
         self.scores = scores
         
         return scores
@@ -136,16 +138,17 @@ class Classifier:
     
 if __name__ == "__main__":
     
-    model = KNeighborsClassifier(n_neighbors=3)
+#    model = KNeighborsClassifier(n_neighbors=3)
 #    model = ExtraTreesClassifier(n_estimators=100)
-#    model = svm.SVC()
+    model = svm.SVC()
     
     clf = Classifier(model)
     
 #    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
 #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
+    save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/SVC.csv'
+
     data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
-    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/UCI_HAR/knn.csv'
 
     data = pd.read_csv(data_path)
     
@@ -153,7 +156,16 @@ if __name__ == "__main__":
     acc_feats = [f for f in all_feats if 'a_' in f]
 
     clf.load_data(data, acc_feats)
-    scores = clf.crossval()
+    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+
+    data = pd.read_csv(data_path)
+    
+    all_feats = data.columns
+    acc_feats = [f for f in all_feats if 'a_' in f]
+
+    clf.load_data(data, acc_feats)
+    
+    scores = clf.crossval(split_col='dataset')
     
     #clf.save_crossval_model('test.pkl')
     np.savetxt(save_path,scores['test_score'])
