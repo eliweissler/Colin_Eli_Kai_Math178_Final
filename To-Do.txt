@@ -4,18 +4,11 @@ compare naive to correctly mapped approach
 
 To Do List:
 
-combine train and test data sets for motion sense, add in user column 
 
-find other datasets and start scraping them together.
-- Kai is working on the UCI ADL HAR dataset.
-- we can also use the mobi act dataset, but we will have to resample it...
--- is this worth it or should we just use 2 for the time being..
+parse mobi-act dataset
 
-Naive Approach
-- trees
-- SVM and k-NN are done 
+run one fold user cross val on the processed mobi act dataset
 
-Set up script to do train/test on data based on user.
 
 figure out how to map to tangent plane correctly
 - option 1: mapping the data to the plane, testing with our classifiers in the plane, get results 
