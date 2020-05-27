@@ -136,13 +136,17 @@ class Classifier:
     
 if __name__ == "__main__":
     
-    # model = KNeighborsClassifier(n_neighbors=3)
-    model = ExtraTreesClassifier(n_estimators=100)
-    # model = svm.SVC()
+    model = KNeighborsClassifier(n_neighbors=3)
+#    model = ExtraTreesClassifier(n_estimators=100)
+#    model = svm.SVC()
     
     clf = Classifier(model)
     
-    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
+#    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
+#    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
+    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/UCI_HAR/knn.csv'
+
     data = pd.read_csv(data_path)
     
     all_feats = data.columns
@@ -152,6 +156,6 @@ if __name__ == "__main__":
     scores = clf.crossval()
     
     #clf.save_crossval_model('test.pkl')
-    np.savetxt('/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv',scores['test_score'])
+    np.savetxt(save_path,scores['test_score'])
 
 
