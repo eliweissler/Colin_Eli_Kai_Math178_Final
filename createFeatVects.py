@@ -103,23 +103,36 @@ if __name__ == "__main__":
     overlap = numObs//2    
 
     ##MOTIONSENSE DATASET
-    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/'
+#    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/'
     #path_path = '/Users/kaikaneshina/Documents/MATH178/project_data'
-    test_path = os.path.join(data_path,'test_set.csv')
-    train_path = os.path.join(data_path,'train_set.csv')
+#    output_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
+#    test_path = os.path.join(data_path,'test_set.csv')
+#    train_path = os.path.join(data_path,'train_set.csv')
+#    train_data = pd.read_csv(train_path)
+#    test_data = pd.read_csv(test_path)
+#    feats = ['roll', 'pitch', 'yaw', 'g_x', 'g_y', 'g_z', 'rot_x', 'rot_y', 'rot_z',
+#           'a_x', 'a_y', 'a_z']
+
+    
+    ## UCI HAR dataset
+    train_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/train/train_set.csv'
+    test_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/test/test_set.csv'
+    output_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
     train_data = pd.read_csv(train_path)
+    train_data = train_data.rename(columns = {'users':'user'})
     test_data = pd.read_csv(test_path)
-    # data = pd.concat([train_data, test_data])
+    test_data = test_data.rename(columns = {'users':'user'})
+    cols = test_data.columns.to_list()
+    cols.remove('activity')
+    cols.remove('user')
+    feats = cols
+    
     out = []
-    feats = ['roll', 'pitch', 'yaw', 'g_x', 'g_y', 'g_z', 'rot_x', 'rot_y', 'rot_z',
-           'a_x', 'a_y', 'a_z']
     for data in [train_data, test_data]:
         out.append(createFeatVects(data, feats, numObs, overlap, 'MotionSense'))
         
     out = pd.concat(out)
-    output_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
     out.to_csv(output_path)
-    
     
     
     # lbl = {'dws': 0, 'ups':1, 'wlk':2, 'jog':3, 'sit':4, 'std':5}
