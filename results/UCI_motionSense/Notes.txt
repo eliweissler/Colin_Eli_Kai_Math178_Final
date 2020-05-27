@@ -1,0 +1,2 @@
+ran on the UCI and motion sense dataset combined
+crossvalidated by dataset 
