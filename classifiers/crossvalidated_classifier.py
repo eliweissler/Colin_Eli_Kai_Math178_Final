@@ -7,7 +7,11 @@ Created on Mon May 25 23:16:15 2020
 """
 
 from sklearn.model_selection import cross_validate
+from sklearn.model_selection import GroupKFold
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn import svm
+from joblib import dump
 
 import pandas as pd
 import numpy as np
@@ -76,7 +80,7 @@ class Classifier:
                 
         self.data.append(data_to_append)
         
-    def crossval(self, split_col = 'user', cols = None, n_folds = None):
+    def crossval(self, split_col = 'user', cols = None):
         """
         Creates a crossvalidated classifier
 
@@ -88,10 +92,7 @@ class Classifier:
         cols : list, optional
             list of columns to use in the classifier. If none is given then keeps all
         
-        n_folds: int
-            specify the number of folds, if none is given then one fold is
-            done per unique user
-
+       
         Returns
         -------
         None.
@@ -107,30 +108,39 @@ class Classifier:
         
         #select columns
         y = all_data['label'].values
+        groups = all_data['user'].values
         
         if cols is None:
-            cols_ = [c for c in all_data.columns if c not in ['label','dataset']]
+            cols_ = [c for c in all_data.columns if c not in ['label','dataset','user']]
         else:
             cols_ = cols
             
         X = all_data[cols_].to_numpy()
         
-        if n_folds is None:
-            n_folds = len(all_data.user.unique())
-        
         print("Beginning model evaluation...")
         scores = cross_validate(estimator = self.model,
-                                X = X, y = y, groups=split_col,
-                                cv=n_folds, return_train_score=False,
+                                X = X, y = y, groups=groups,
+                                cv=GroupKFold(n_splits=len(np.unique(groups))), 
+                                return_train_score=False,
                                 return_estimator=True, n_jobs=2)
         
+        self.scores = scores
+        
         return scores
+    
+    
+    def save_crossval_model(self, save_path):
+        dump(scores, save_path)
     
     
     
 if __name__ == "__main__":
     
-    clf = Classifier(KNeighborsClassifier(n_neighbors=3))
+    # model = KNeighborsClassifier(n_neighbors=3)
+    model = ExtraTreesClassifier(n_estimators=100)
+    # model = svm.SVC()
+    
+    clf = Classifier(model)
     
     data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
     data = pd.read_csv(data_path)
@@ -140,5 +150,8 @@ if __name__ == "__main__":
 
     clf.load_data(data, acc_feats)
     scores = clf.crossval()
+    
+    #clf.save_crossval_model('test.pkl')
+    np.savetxt('/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv',scores['test_score'])
 
 
