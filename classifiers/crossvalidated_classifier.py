@@ -100,7 +100,7 @@ class Classifier:
         """
         #concatenate all of the data together
         if len(self.data) > 1:
-            all_data = pd.concat(self.data, axis=0, ignore_axis=True, copy=False)
+            all_data = pd.concat(self.data, axis=0, ignore_index=True, copy=False)
         elif len(self.data) == 1:
             all_data = self.data[0]
         else:
@@ -108,7 +108,7 @@ class Classifier:
         
         #select columns
         y = all_data['label'].values
-        groups = all_data['user'].values
+        groups = all_data[split_col].values
         
         if cols is None:
             cols_ = [c for c in all_data.columns if c not in ['label','dataset','user']]
@@ -124,6 +124,8 @@ class Classifier:
                                 return_train_score=False,
                                 return_estimator=True, n_jobs=2)
         
+        # scores are in the order of the groups, so the first row out is the
+        # result of training on the other groups, and testing on the first group
         self.scores = scores
         
         return scores
@@ -144,16 +146,31 @@ if __name__ == "__main__":
     
 #    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
 #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
-    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
-    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/UCI_HAR/knn.csv'
+    save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
 
-    data = pd.read_csv(data_path)
+    data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+
+
+    data1 = pd.read_csv(data_path1)
+    data2 = pd.read_csv(data_path2)
+    labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
     
-    all_feats = data.columns
+    data1 = data1[[True if x in labels else False for x in data1.label]]
+    data2 = data2[[True if x in labels else False for x in data2.label]]
+    
+    all_feats = data1.columns
     acc_feats = [f for f in all_feats if 'a_' in f]
 
-    clf.load_data(data, acc_feats)
-    scores = clf.crossval()
+    clf.load_data(data1, acc_feats)
+
+    
+    all_feats = data2.columns
+    acc_feats = [f for f in all_feats if 'a_' in f]
+
+    clf.load_data(data2, acc_feats)
+    
+    scores = clf.crossval(split_col='dataset')
     
     #clf.save_crossval_model('test.pkl')
     np.savetxt(save_path,scores['test_score'])
