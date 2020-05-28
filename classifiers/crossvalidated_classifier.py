@@ -138,32 +138,37 @@ class Classifier:
     
 if __name__ == "__main__":
     
-#    model = KNeighborsClassifier(n_neighbors=3)
+    model = KNeighborsClassifier(n_neighbors=3)
 #    model = ExtraTreesClassifier(n_estimators=100)
-    model = svm.SVC()
+#    model = svm.SVC()
     
     clf = Classifier(model)
     
 #    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
 #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
-    save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/SVC.csv'
+    save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
 
-    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+    data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
 
-    data = pd.read_csv(data_path)
+
+    data1 = pd.read_csv(data_path1)
+    data2 = pd.read_csv(data_path2)
+    labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
     
-    all_feats = data.columns
+    data1 = data1[[True if x in labels else False for x in data1.label]]
+    data2 = data2[[True if x in labels else False for x in data2.label]]
+    
+    all_feats = data1.columns
     acc_feats = [f for f in all_feats if 'a_' in f]
 
-    clf.load_data(data, acc_feats)
-    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    clf.load_data(data1, acc_feats)
 
-    data = pd.read_csv(data_path)
     
-    all_feats = data.columns
+    all_feats = data2.columns
     acc_feats = [f for f in all_feats if 'a_' in f]
 
-    clf.load_data(data, acc_feats)
+    clf.load_data(data2, acc_feats)
     
     scores = clf.crossval(split_col='dataset')
     
