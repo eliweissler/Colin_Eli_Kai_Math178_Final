@@ -57,9 +57,9 @@ wlk_ay = trainMat_[inds][ay].to_numpy()
 wlk_az = trainMat_[inds][az].to_numpy()
 
 
-first_elem = np.vstack((jogging_ax[20,:], jogging_ay[20,:], jogging_az[20,:])).T
+# first_elem = np.vstack((jogging_ax[20,:], jogging_ay[20,:], jogging_az[20,:])).T
 # first_elem = np.vstack((wlk_ax[20,:], wlk_ay[20,:], wlk_az[20,:])).T
-# first_elem = np.vstack((sitting_ax[20,:], sitting_ay[20,:], sitting_az[20,:])).T
+first_elem = np.vstack((sitting_ax[20,:], sitting_ay[20,:], sitting_az[20,:])).T
 # first_elem = np.vstack((sitting_ax[[20,22,24,26],:].reshape(1,-1), sitting_ay[[20,22,24,26],:].reshape(1,-1), sitting_az[[20,22,24,26],:].reshape(1,-1))).T
 # first_elem = np.vstack((jogging_ax[[20,22,24,26],:].reshape(1,-1), jogging_ay[[20,22,24,26],:].reshape(1,-1), jogging_az[[20,22,24,26],:].reshape(1,-1))).T
 
@@ -99,7 +99,8 @@ app_z_spline = ap_z_spline.derivative()
 
 #make a finer time vector
 newt = np.linspace(min(t), max(t), num = 20*len(t))
-#calculate curvature
+
+#calculate torsion
 torL = []
 for tt in newt:
     #calculate vector
@@ -112,6 +113,34 @@ for tt in newt:
                /np.linalg.norm(np.cross(v_1, v_2))
     torL += [torsion]
 
+
+#calculate torsion
+curvL = []
+for tt in newt:
+    #calculate vector
+    v_1 = np.array([a_x_spline(tt), a_y_spline(tt), a_z_spline(tt)])
+    v_2 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+    
+    #calculate curvature
+    curvature = 2 * np.linalg.norm(np.cross(v_1, v_2)) \
+                /np.linalg.norm(v_1)**(3/2)
+    curvL += [curvature]
+
+
+
+
+#####################
+## MAKE Curvature PLOT
+#####################
+fig = plt.figure()
+plt.xlabel('Time', size = 14)
+plt.ylabel('Curvature Magnitude' , size = 14)
+plt.title('Motion Sense Sit', size = 20)
+plt.plot(newt, curvL)
+
+
+
+
 #####################
 ## MAKE TORSION PLOT
 #####################
@@ -122,14 +151,21 @@ for tt in newt:
 # plt.plot(newt, torL)
 
 
+
+
 #####################
 ## MAKE VELOCITY PLOT
 #####################
    
-fig = plt.figure()
-ax = plt.axes(projection='3d')
+# fig = plt.figure()
+# ax = plt.axes(projection='3d')
 
-final_x, final_y, final_z = v_x_spline(newt), v_y_spline(newt), v_z_spline(newt)
+# final_x, final_y, final_z = v_x_spline(newt), v_y_spline(newt), v_z_spline(newt)
+# ax.scatter3D(final_x, final_y, final_z,c=np.arange(len(final_x)),cmap='jet',s=0.5)
+
+#####################
+## MAKE Accleration PLOT
+#####################
 
 ###Uncomment for accleration sphere
 # u, v = np.mgrid[0:2*np.pi:200j, 0:np.pi:100j]
@@ -140,7 +176,6 @@ final_x, final_y, final_z = v_x_spline(newt), v_y_spline(newt), v_z_spline(newt)
 # ax.plot3D(xline, yline, zline, 'gray')
 # ax.scatter3D(xline, yline, zline,c=np.arange(len(xline)),cmap='jet',s=0.5)
 
-ax.scatter3D(final_x, final_y, final_z,c=np.arange(len(final_x)),cmap='jet',s=0.5)
 
 plt.show()
  
