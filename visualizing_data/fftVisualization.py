@@ -9,9 +9,9 @@ Created on Sat May 30 21:51:07 2020
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.signal import get_window
+import scipy
 
-def calc_fft(feature_vec):
+def calc_fft(feature_vec, smooth = True):
     """
     takes in feature vector, splits it into its 3 components, and does the fft of each
     returns magnitude of fft for each component 
@@ -20,6 +20,13 @@ def calc_fft(feature_vec):
     xline = feature_vec[0::3]
     yline = feature_vec[1::3]
     zline = feature_vec[2::3]
+    
+    # smooth the data, with sigma =2 
+    if smooth:
+        xline = scipy.ndimage.filters.gaussian_filter1d(xline,2)
+        yline = scipy.ndimage.filters.gaussian_filter1d(yline,2)
+        zline = scipy.ndimage.filters.gaussian_filter1d(zline,2)
+
     
     # do fft of each
     xFFT = np.abs(np.fft.fftshift(np.fft.fft(xline)))
@@ -31,6 +38,7 @@ def calc_fft(feature_vec):
 if __name__ == '__main__':
     data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
 #    data_path2 = '/Users/collopa/Desktop/nonlinear/project/data/motion_sense/MotionSense_FeatMat.csv'
+#    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
     data = pd.read_csv(data_path2)
     
     for act in data.label.unique():
@@ -69,19 +77,23 @@ if __name__ == '__main__':
         plt.title('activity: ' + act + ' z fft')
 #        plt.legend()
         
-        # plot signal
+        # plot signal smoothed signal
+        xline = scipy.ndimage.filters.gaussian_filter1d(row[0::3],2)
+        yline = scipy.ndimage.filters.gaussian_filter1d(row[1::3],2)
+        zline = scipy.ndimage.filters.gaussian_filter1d(row[2::3],2)
+
         plt.subplot(322)
-        plt.plot(np.linspace(0,2.54,128), row[0::3], label = 'a_x')
+        plt.plot(np.linspace(0,2.54,128), xline, label = 'a_x')
         plt.title('activity: ' + act + ' a_x')
 #        plt.legend()
         
         plt.subplot(324)
-        plt.plot(np.linspace(0,2.54,128), row[1::3], label = 'a_y')
+        plt.plot(np.linspace(0,2.54,128), yline, label = 'a_y')
         plt.title('activity: ' + act + ' a_y')
 #        plt.legend()
         
         plt.subplot(326)
-        plt.plot(np.linspace(0,2.54,128), row[2::3], label = 'a_z')
+        plt.plot(np.linspace(0,2.54,128), zline, label = 'a_z')
         plt.title('activity: ' + act + ' a_z')
 #        plt.legend()
         plt.tight_layout()

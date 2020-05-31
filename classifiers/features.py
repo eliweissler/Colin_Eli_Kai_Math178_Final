@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline as IUS
-
+import scipy
 
 def spline_accelerometer(feature_vec):
     """
@@ -97,7 +97,7 @@ def calc_curvature(feature_vec):
 
     return curvL
 
-def calc_fft(feature_vec):
+def calc_fft(feature_vec, smooth = True):
     """
     takes in feature vector, splits it into its 3 components, and does the fft of each
     returns magnitude of fft for each component 
@@ -106,6 +106,13 @@ def calc_fft(feature_vec):
     xline = feature_vec[0::3]
     yline = feature_vec[1::3]
     zline = feature_vec[2::3]
+    
+    # smooth the data, with sigma =2 
+    if smooth:
+        xline = scipy.ndimage.filters.gaussian_filter1d(xline,2)
+        yline = scipy.ndimage.filters.gaussian_filter1d(yline,2)
+        zline = scipy.ndimage.filters.gaussian_filter1d(zline,2)
+
     
     # do fft of each
     xFFT = np.abs(np.fft.fftshift(np.fft.fft(xline)))
