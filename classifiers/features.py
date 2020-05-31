@@ -96,3 +96,23 @@ def calc_curvature(feature_vec):
         curvL += [curvature]
 
     return curvL
+
+def calc_fft(feature_vec):
+    """
+    takes in feature vector, splits it into its 3 components, and does the fft of each
+    returns magnitude of fft for each component 
+    """
+    # separate components
+    xline = feature_vec[0::3]
+    yline = feature_vec[1::3]
+    zline = feature_vec[2::3]
+    
+    # do fft of each
+    xFFT = np.abs(np.fft.fftshift(np.fft.fft(xline)))
+    yFFT = np.abs(np.fft.fftshift(np.fft.fft(yline)))
+    zFFT = np.abs(np.fft.fftshift(np.fft.fft(zline)))
+
+    return xFFT, yFFT, zFFT
+        
+    
+    
