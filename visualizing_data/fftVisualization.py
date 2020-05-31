@@ -9,6 +9,8 @@ Created on Sat May 30 21:51:07 2020
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.signal import get_window
+
 def calc_fft(feature_vec):
     """
     takes in feature vector, splits it into its 3 components, and does the fft of each
@@ -27,8 +29,8 @@ def calc_fft(feature_vec):
     return xFFT, yFFT, zFFT
 
 if __name__ == '__main__':
-    # data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
-    data_path2 = '/Users/collopa/Desktop/nonlinear/project/data/motion_sense/MotionSense_FeatMat.csv'
+    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+#    data_path2 = '/Users/collopa/Desktop/nonlinear/project/data/motion_sense/MotionSense_FeatMat.csv'
     data = pd.read_csv(data_path2)
     
     for act in data.label.unique():
@@ -50,20 +52,38 @@ if __name__ == '__main__':
         # reshape which is necessary for scikit learn
         
         xFFT, yFFT, zFFT = calc_fft(row)
-        
+        # plot fft
         plt.figure();
+        plt.subplot(321)
         plt.plot(np.fft.fftshift(np.fft.fftfreq(int(row.shape[0]/3)))*50, xFFT, label = 'x fft')
         plt.title('activity: ' + act + ' x fft')
-        plt.legend()
+#        plt.legend()
         
-        plt.figure();
+        plt.subplot(323)
         plt.plot(np.fft.fftshift(np.fft.fftfreq(int(row.shape[0]/3)))*50, yFFT, label = 'y fft')
         plt.title('activity: ' + act + ' y fft')
-        plt.legend()
-
-        plt.figure();
+#        plt.legend()
+        
+        plt.subplot(325)
         plt.plot(np.fft.fftshift(np.fft.fftfreq(int(row.shape[0]/3)))*50, zFFT, label = 'z fft')
         plt.title('activity: ' + act + ' z fft')
-        plt.legend()
-
+#        plt.legend()
+        
+        # plot signal
+        plt.subplot(322)
+        plt.plot(np.linspace(0,2.54,128), row[0::3], label = 'a_x')
+        plt.title('activity: ' + act + ' a_x')
+#        plt.legend()
+        
+        plt.subplot(324)
+        plt.plot(np.linspace(0,2.54,128), row[1::3], label = 'a_y')
+        plt.title('activity: ' + act + ' a_y')
+#        plt.legend()
+        
+        plt.subplot(326)
+        plt.plot(np.linspace(0,2.54,128), row[2::3], label = 'a_z')
+        plt.title('activity: ' + act + ' a_z')
+#        plt.legend()
+        plt.tight_layout()
+        
         plt.show()
