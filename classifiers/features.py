@@ -22,7 +22,7 @@ def spline_accelerometer(feature_vec):
     a_y_spline = IUS(t, yline)
     a_z_spline = IUS(t, zline)
 
-    return a_x_spline, a_z_spline, a_z_spline
+    return a_x_spline, a_y_spline, a_z_spline
 
 
 
@@ -34,7 +34,7 @@ def calc_torsion(feature_vec):
     by finding first and second derivatives of accelerometer data
     """
     #get alpha'
-    a_x_spline, a_z_spline, a_z_spline = spline_accelerometer(feature_vec)
+    a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
     
     #find alpha''
     ap_x_spline = a_x_spline.derivative()
@@ -65,7 +65,7 @@ def calc_torsion(feature_vec):
 
 
 
-def calc_torsion(feature_vec):
+def calc_curvature(feature_vec):
     """
     given accelerometer feature vector (which we call alpha prime), 
     calculate the curvature at each 0.02 second time interval
@@ -73,7 +73,7 @@ def calc_torsion(feature_vec):
     by finding first and second derivatives of accelerometer data
     """
     #get alpha'
-    a_x_spline, a_z_spline, a_z_spline = spline_accelerometer(feature_vec)
+    a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
     
     #find alpha''
     ap_x_spline = a_x_spline.derivative()
