@@ -17,7 +17,7 @@ def spline_accelerometer(feature_vec):
 
 
     #spline the accleration, aka alpha'
-    t = np.linspace(0, 2.56, 128) #define time interval
+    t = np.linspace(0, 2.54, 128) #define time interval
     a_x_spline = IUS(t, xline)
     a_y_spline = IUS(t, yline)
     a_z_spline = IUS(t, zline)
@@ -47,7 +47,7 @@ def calc_torsion(feature_vec):
     app_z_spline = ap_z_spline.derivative()
 
     #define time interval
-    t = np.linspace(0, 2.56, 128) 
+    t = np.linspace(0, 2.54, 128) 
 
     #calculate torsion
     torL = []
@@ -81,7 +81,7 @@ def calc_curvature(feature_vec):
     ap_z_spline = a_z_spline.derivative()
 
     #define time interval
-    t = np.linspace(0, 2.56, 128) 
+    t = np.linspace(0, 2.54, 128) 
 
     #calculate curvature
     curvL = []
