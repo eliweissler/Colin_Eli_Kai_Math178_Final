@@ -27,7 +27,8 @@ def calc_fft(feature_vec):
     return xFFT, yFFT, zFFT
 
 if __name__ == '__main__':
-    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    # data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    data_path2 = '/Users/collopa/Desktop/nonlinear/project/data/motion_sense/MotionSense_FeatMat.csv'
     data = pd.read_csv(data_path2)
     
     for act in data.label.unique():
@@ -64,3 +65,5 @@ if __name__ == '__main__':
         plt.plot(np.fft.fftshift(np.fft.fftfreq(int(row.shape[0]/3)))*50, zFFT, label = 'z fft')
         plt.title('activity: ' + act + ' z fft')
         plt.legend()
+
+        plt.show()
