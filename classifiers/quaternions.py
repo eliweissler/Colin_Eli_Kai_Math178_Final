@@ -17,7 +17,7 @@ def rotate_data(feature_vector, align_vector):
 
     for i in range(0, len(feature_vector), 3):
         # the data we are rotating
-        u = data[i:i+3]
+        u = feature_vector[i:i+3]
 
         # unit vector to align to (e.g. gravity)
         v = align_vector
