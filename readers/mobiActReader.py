@@ -23,7 +23,7 @@ paths = ['/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.
 
 newColNames = {'acc_x':'a_x', 'acc_y':'a_y', 'acc_z':'a_z', 'gyro_x':'rot_x', 
            'gyro_y':'rot_y', 'gyro_z':'rot_z', 'azimuth':'yaw'}
-newLabels = {'WAL':'wlk', 'STU':'ups', 'STN':'dws', 'STD':'std', 'JOG':'jog'}
+newLabels = {'WAL':'wlk', 'STU':'ups', 'STN':'dws', 'STD':'std', 'JOG':'jog', 'SIT':'sit'}
 
 numObs = 128
 overlap = int(numObs/2)
@@ -57,12 +57,20 @@ for folder in paths:
         df['label'] = df['label'].map(newLabels)
         feats = df.columns[df.columns!='label']
 
+        diff = df.shape[0]%87
+        idxs = np.arange(0,df.shape[0]-diff,87)
+        
+        vals = df[feats].to_numpy()
+        resamp = np.concatenate([signal.resample(vals[i:i+87,:],50) for i in idxs])
+        dfNew = pd.DataFrame(resamp, columns = feats)
+            
         # determine spacing
-        spacing = np.arange(0,df.shape[0],overlap)
+        spacing = np.arange(0,dfNew.shape[0],overlap)
         # skip the last value in the spacing since we add overlap*2 to each value 
-        # for indexing
+        # for indexinga
+        
         for idx in spacing[:-2]:
-            subset = df.iloc[idx:idx + numObs][feats]
+            subset = dfNew.iloc[idx:idx + numObs][feats]
             featVect = subset.values.flatten()
             actFeatureVectors.append(featVect)
             
@@ -70,7 +78,7 @@ for folder in paths:
         actFeatureMatrix = pd.DataFrame(np.array(actFeatureVectors), columns = col_labels)
         actFeatureMatrix['dataset'] = 'mobiAct'
         actFeatureMatrix['user'] = user 
-        actFeatureMatrix['label'] = df.label.unique()[0]
+        actFeatureMatrix['label'] = newLabels[lbl]
         dfList.append(actFeatureMatrix)
         
 total = pd.concat(dfList,ignore_index = True,sort=False)
