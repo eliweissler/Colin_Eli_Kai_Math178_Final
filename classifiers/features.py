@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline as IUS
 import scipy
+from sklearn.decomposition import PCA 
 
 def spline_accelerometer(feature_vec):
     """
@@ -120,6 +121,20 @@ def calc_fft(feature_vec, smooth = True):
     zFFT = np.abs(np.fft.fftshift(np.fft.fft(zline)))
 
     return xFFT, yFFT, zFFT
+
+def calc_pca(feature_vec):
+    """
+    takes in feature vector, returns eigenvectors and eigenvalues based on pca
+    """
+    # reshape the data
+    accXYZ = feature_vec.reshape(128,3)
+    pca = PCA(n_components = 3)
+        
+    pca.fit(accXYZ)
+    eigVals = pca.explained_variance_
+    eigVects = pca.components_
+
+    return eigVals, eigVects
         
     
     
