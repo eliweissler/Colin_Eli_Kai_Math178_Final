@@ -14,6 +14,8 @@ def rotate_data_bad(feature_vector, align_vector):
     from a memory POV i think
     """
     rotated_data = []
+    
+    print("This probably isn't the function you want.")
 
     for i in range(0, len(feature_vector), 3):
         # the data we are rotating
