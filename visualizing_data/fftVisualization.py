@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
 
-def calc_fft(feature_vec, smooth = True):
+def calc_fft(feature_vec, smooth = False):
     """
     takes in feature vector, splits it into its 3 components, and does the fft of each
     returns magnitude of fft for each component 
@@ -36,9 +36,11 @@ def calc_fft(feature_vec, smooth = True):
     return xFFT, yFFT, zFFT
 
 if __name__ == '__main__':
-    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+#    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
 #    data_path2 = '/Users/collopa/Desktop/nonlinear/project/data/motion_sense/MotionSense_FeatMat.csv'
 #    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
+             
     data = pd.read_csv(data_path2)
     
     for act in data.label.unique():
@@ -52,10 +54,10 @@ if __name__ == '__main__':
         acc_feats_g = [f for f in all_feats_g if 'g_' in f]
     
         Y = data2[acc_feats].to_numpy()
-        Y_g = data2[acc_feats_g].to_numpy()
+#        Y_g = data2[acc_feats_g].to_numpy() # do this for motion sense
         #Y[0,:]
         
-        row = Y[0,:] + Y_g[0,:]
+        row = Y[0,:] #+ Y_g[0,:] add back in g for motion sense
         # make X values based on sample rate and number of points in each row
         # reshape which is necessary for scikit learn
         
@@ -78,9 +80,9 @@ if __name__ == '__main__':
 #        plt.legend()
         
         # plot signal smoothed signal
-        xline = scipy.ndimage.filters.gaussian_filter1d(row[0::3],2)
-        yline = scipy.ndimage.filters.gaussian_filter1d(row[1::3],2)
-        zline = scipy.ndimage.filters.gaussian_filter1d(row[2::3],2)
+        xline = row[0::3]#scipy.ndimage.filters.gaussian_filter1d(row[0::3],2)
+        yline = row[1::3]#scipy.ndimage.filters.gaussian_filter1d(row[1::3],2)
+        zline = row[2::3]#scipy.ndimage.filters.gaussian_filter1d(row[2::3],2)
 
         plt.subplot(322)
         plt.plot(np.linspace(0,2.54,128), xline, label = 'a_x')
