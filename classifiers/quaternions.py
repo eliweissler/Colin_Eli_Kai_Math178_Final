@@ -5,6 +5,7 @@ import numpy as np
 from numpy import random
 from numpy.linalg import norm
 from sklearn.decomposition import PCA
+from scipy.spatial.transform import Rotation as R
 
 from sklearn.decomposition import KernelPCA
 
@@ -94,3 +95,34 @@ def PCA_rotate_data(feature_vector, n_points=128, nonlinear=True):
 
     return rotPCAData, [new_x_hat, new_y_hat, new_z_hat]
 
+def rotate_to_zero(acc, ypr):
+    """
+    Rotates the acceleration vectors to be in the 
+    frame of roll/pitch/yaw of 0
+
+    Parameters
+    ----------
+    acc : nx3 np array
+        [ax, ay, az]
+    ypr : nx3 np array
+        [yaw pitch roll]
+
+    Returns
+    -------
+    acc_rot : TYPE
+        DESCRIPTION.
+
+    """
+    
+    #create the rotations to rotate to zero
+    trans = R.from_euler('zxy',ypr).as_quat() #returns the scalar last
+    trans = [Quaternion(imaginary = x[:-1], real = x[-1]) for x in trans]
+    
+    #apply the appropriate roation for each element
+    acc_rot = np.array([rotate_quat(Quaternion(imaginary=acc[i,:]), trans[i].conjugate).imaginary for i in range(acc.shape[0])])
+    
+    return acc_rot
+
+def rotate_quat(p,q):
+    p_new = (q*p)*q.conjugate
+    return p_new
