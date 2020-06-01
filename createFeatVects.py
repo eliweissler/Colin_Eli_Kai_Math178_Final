@@ -15,7 +15,8 @@ import pickle
 
 
     
-def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None):
+def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None,
+                    rotate_to_zero = False):
     """
     Creates a feature matrix from a raw observation csv
 
@@ -35,6 +36,8 @@ def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None
         what is the dataset name?
     save_path : str or path
         path to save the feature matrix
+    rotate_to_zero: Bool
+        whether or not to rotate the acceleration axes to pitch/roll/yaw = 0
 
     Returns
     -------

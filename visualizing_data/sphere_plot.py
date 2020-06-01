@@ -54,8 +54,8 @@ wlk_az = trainMat_[inds][az].to_numpy()
 
 
 # first_elem = np.vstack((jogging_ax[20,:], jogging_ay[20,:], jogging_az[20,:])).T
-first_elem = np.vstack((wlk_ax[20,:], wlk_ay[20,:], wlk_az[20,:])).T
-# first_elem = np.vstack((sitting_ax[20,:], sitting_ay[20,:], sitting_az[20,:])).T
+# first_elem = np.vstack((wlk_ax[20,:], wlk_ay[20,:], wlk_az[20,:])).T
+first_elem = np.vstack((sitting_ax[20,:], sitting_ay[20,:], sitting_az[20,:])).T
 # first_elem = np.vstack((sitting_ax[[20,22,24,26],:].reshape(1,-1), sitting_ay[[20,22,24,26],:].reshape(1,-1), sitting_az[[20,22,24,26],:].reshape(1,-1))).T
 # first_elem = np.vstack((jogging_ax[[20,22,24,26],:].reshape(1,-1), jogging_ay[[20,22,24,26],:].reshape(1,-1), jogging_az[[20,22,24,26],:].reshape(1,-1))).T
 
