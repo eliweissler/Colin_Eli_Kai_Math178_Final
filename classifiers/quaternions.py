@@ -6,6 +6,8 @@ from numpy import random
 from numpy.linalg import norm
 from sklearn.decomposition import PCA
 
+from sklearn.decomposition import KernelPCA
+
 def rotate_data_bad(feature_vector, align_vector):
     """
     We want to rotate our data in some frame
@@ -34,7 +36,7 @@ def rotate_data_bad(feature_vector, align_vector):
         r = r/norm(r)
 
         # quaternion to rotate [0,ux,uy,uz]
-        p = Quaternion(imaginary = u_test)
+        p = Quaternion(imaginary = u)
 
         # quaternion rotation matrix, rotates angle theta about axis r
         q = Quaternion(axis=r, angle = theta)
@@ -47,7 +49,7 @@ def rotate_data_bad(feature_vector, align_vector):
 
 
 
-def PCA_rotate_data(feature_vector):
+def PCA_rotate_data(feature_vector, n_points=128, nonlinear=True):
     """
     Rotate the data to align with the principal components
     of our acceleration data.
@@ -56,19 +58,26 @@ def PCA_rotate_data(feature_vector):
     Second largest will be y-axis, I guess.
     """
 
-    accXYZ = feature_vector.reshape(128,3)
-    pca = PCA(n_components = 3)
-        
+    accXYZ = feature_vector.reshape(n_points,-1)
+    if nonlinear:
+        pca = KernelPCA(n_components=3, kernel='polynomial')
+    else:
+        pca = PCA(n_components = 3)
+       
     pca.fit(accXYZ)
     
     # pca.explained_variance_: importance of data on each axis aka their important
     # tells us direction of vector, they are the eigenvalues
-    eigVals = pca.explained_variance_
-    eigVects = pca.components_
+    if nonlinear:
+        eigVals = pca.lambdas_
+        eigVects = pca.alphas_
+    else:
+        eigVals = pca.explained_variance_
+        eigVects = pca.components_
 
     x_index = np.argmin(eigVals)
     z_index = np.argmax(eigVals)
-    y_index = set([0,1,2]) - set([x_index, z_index])
+    y_index = list(set([0,1,2]) - set([x_index, z_index]))[0]
 
     new_x_hat = eigVects[x_index]/norm(eigVects[x_index])
     new_y_hat = eigVects[y_index]/norm(eigVects[y_index])
@@ -83,5 +92,5 @@ def PCA_rotate_data(feature_vector):
         new_z = np.dot(new_z_hat, v )
         rotPCAData += [new_x, new_y, new_z]
 
-    return rotPCAData
+    return rotPCAData, [new_x_hat, new_y_hat, new_z_hat]
 
