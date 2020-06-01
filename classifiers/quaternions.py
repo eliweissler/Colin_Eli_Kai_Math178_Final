@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from numpy import random
 from numpy.linalg import norm
+from sklearn.decomposition import PCA
 
 def rotate_data_bad(feature_vector, align_vector):
     """
