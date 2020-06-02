@@ -61,7 +61,7 @@ if __name__ == '__main__':
     # fname = 'mobiAct_FeatMat_Rotated.csv'
     path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
     savePath = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense'
-    fname = 'motionSense_FeatMat_Rotated.csv'
+    fname = 'MotionSense_FeatMat_Rotated.csv'
 
 
     featMat = pd.read_csv(path)

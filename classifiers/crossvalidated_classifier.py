@@ -161,10 +161,10 @@ def wrapper(path, split_col, savePath):
     modelList.append(model)
     model = ExtraTreesClassifier(n_estimators=100)    
     modelList.append(model)
-    model = svm.SVC()
-    modelList.append(model)
+    # model = svm.SVC()
+    # modelList.append(model)
     
-    modelNames = ['k-NN', 'extra-Trees', 'SVC']
+    modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
     
     scoreDf = pd.DataFrame()
     scoreDf['user'] = sorted(data.user.unique())
@@ -216,15 +216,16 @@ if __name__ == "__main__":
     # np.savetxt(save_path,scores['test_score'])
     
     
-    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
-    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/raw/raw128.csv'
+    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    # save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/raw/noGyroRaw128.csv'
 
     # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat_Rotated.csv'
     # save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/rotated/rotated128.csv'
 
 
     # mobiact: regular
-    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
+    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
+    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/mobiAct/userCrossVal/raw/raw128.csv'
     # mobiact: rotated
     # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat_Rotated.csv'
     wrapper(data_path, 'user', save_path)
