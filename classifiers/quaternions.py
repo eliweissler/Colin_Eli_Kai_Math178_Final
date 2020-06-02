@@ -50,7 +50,7 @@ def rotate_data_bad(feature_vector, align_vector):
 
 
 
-def PCA_rotate_data(feature_vector, n_points=128, nonlinear=True):
+def PCA_rotate_data(feature_vector, n_points=128, nonlinear=False):
     """
     Rotate the data to align with the principal components
     of our acceleration data.

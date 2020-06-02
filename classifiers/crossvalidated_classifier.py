@@ -132,47 +132,101 @@ class Classifier:
     
     
     def save_crossval_model(self, save_path):
-        dump(scores, save_path)
+        dump(self.scores, save_path)
     
+def wrapper(path, split_col, savePath):
+    """
+    wrapper for cross val classifier: applies 3 models, to the accerleration, and gyroscope data
+
+    Parameters
+    ----------
+    path : string
+        path to the csv of interest for running the classifiers.
+    split_col: string
+        which column to use for cross validataion
+    savePath: string
+        where to save the csv
+    Returns
+    -------
+    None.
+
+    """
     
+    data = pd.read_csv(path)
+    all_feats = data.columns
+    acc_feats = [f for f in all_feats if 'a_' in f or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
+    
+    modelList = []
+    model = KNeighborsClassifier(n_neighbors=3)
+    modelList.append(model)
+    model = ExtraTreesClassifier(n_estimators=100)    
+    modelList.append(model)
+    model = svm.SVC()
+    modelList.append(model)
+    
+    modelNames = ['k-NN', 'extra-Trees', 'SVC']
+    
+    scoreDf = pd.DataFrame()
+    scoreDf['user'] = sorted(data.user.unique())
+    for idx, model in enumerate(modelList):
+        clf = Classifier(model)
+        clf.load_data(data, acc_feats)
+        scores = clf.crossval(split_col=split_col)
+        scoreDf[modelNames[idx]] = scores['test_score']
+        
+    scoreDf.to_csv(savePath, index = False)
+    
+    return
     
 if __name__ == "__main__":
     
-    model = KNeighborsClassifier(n_neighbors=3)
+    # model = KNeighborsClassifier(n_neighbors=3)
 #    model = ExtraTreesClassifier(n_estimators=100)
 #    model = svm.SVC()
     
-    clf = Classifier(model)
+    # clf = Classifier(model)
     
 #    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
 #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
-    save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
+    # save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
 
-    data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
-    data_path2 = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    # data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
 
-
-    data1 = pd.read_csv(data_path1)
-    data2 = pd.read_csv(data_path2)
-    labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
+    # data1 = pd.read_csv(data_path1)
+    # # data2 = pd.read_csv(data_path2)
+    # # labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
     
-    data1 = data1[[True if x in labels else False for x in data1.label]]
-    data2 = data2[[True if x in labels else False for x in data2.label]]
+    # # data1 = data1[[True if x in labels else False for x in data1.label]]
+    # # data2 = data2[[True if x in labels else False for x in data2.label]]
     
-    all_feats = data1.columns
-    acc_feats = [f for f in all_feats if 'a_' in f]
+    # all_feats = data1.columns
+    # acc_feats = [f for f in all_feats if 'a_' in f]
 
-    clf.load_data(data1, acc_feats)
+    # clf.load_data(data1, acc_feats)
 
     
-    all_feats = data2.columns
-    acc_feats = [f for f in all_feats if 'a_' in f]
+    # all_feats = data2.columns
+    # acc_feats = [f for f in all_feats if 'a_' in f]
 
-    clf.load_data(data2, acc_feats)
+    # clf.load_data(data2, acc_feats)
     
-    scores = clf.crossval(split_col='dataset')
+    # scores = clf.crossval(split_col='user')
     
     #clf.save_crossval_model('test.pkl')
-    np.savetxt(save_path,scores['test_score'])
+    # np.savetxt(save_path,scores['test_score'])
+    
+    
+    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat.csv'
+    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/raw/raw128.csv'
+
+    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat_Rotated.csv'
+    # save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/rotated/rotated128.csv'
+
+
+    # mobiact: regular
+    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
+    # mobiact: rotated
+    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat_Rotated.csv'
+    wrapper(data_path, 'user', save_path)
 
 
