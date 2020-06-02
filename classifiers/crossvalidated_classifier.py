@@ -18,15 +18,15 @@ import numpy as np
 
 class Classifier:
     """
-    Simple class for keeping track of data and running 
+    Simple class for keeping track of data and running
     crossvalidation on sklearn classifiers
     """
-    
+
     def __init__(self, model):
         self.data = []
-        
+
         self.set_model(model)
-        
+
     def set_model(self, model):
         """
         Sets the model for classification
@@ -34,16 +34,16 @@ class Classifier:
         Parameters
         ----------
         model : sklearn classifier
-            
+
 
         Returns
         -------
         None.
 
         """
-        
+
         self.model = model
-        
+
     def load_data(self, data, cols = None):
         """
         Loads data and appends it to the internal dataset
@@ -52,7 +52,7 @@ class Classifier:
         ----------
         data : pd dataframe or path to load one
             feature matrix, where the column 'label' has the class
-            
+
         cols : list, optional
             list of columns to keep. If none is given then keeps all
 
@@ -61,12 +61,12 @@ class Classifier:
         None.
 
         """
-        
+
         if isinstance(data, str):
             data = pd.read_csv(data)
-        
+
         data_to_append = data.copy()
-        
+
         #get column subset if needed
         if cols is not None:
             cols_ = cols[:]
@@ -77,9 +77,9 @@ class Classifier:
             if 'dataset' not in cols:
                 cols_.append('dataset')
             data_to_append = data_to_append[cols_]
-                
+
         self.data.append(data_to_append)
-        
+
     def crossval(self, split_col = 'user', cols = None):
         """
         Creates a crossvalidated classifier
@@ -88,11 +88,11 @@ class Classifier:
         ----------
         split_col : TYPE, optional
             DESCRIPTION. The default is 'user'.
-            
+
         cols : list, optional
             list of columns to use in the classifier. If none is given then keeps all
-        
-       
+
+
         Returns
         -------
         None.
@@ -105,33 +105,47 @@ class Classifier:
             all_data = self.data[0]
         else:
             raise ValueError("I gots no data :'(")
-        
+
         #select columns
         y = all_data['label'].values
         groups = all_data[split_col].values
-        
+
         if cols is None:
             cols_ = [c for c in all_data.columns if c not in ['label','dataset','user']]
         else:
             cols_ = cols
-            
+
         X = all_data[cols_].to_numpy()
-        
+
         print("Beginning model evaluation...")
         scores = cross_validate(estimator = self.model,
                                 X = X, y = y, groups=groups,
-                                cv=GroupKFold(n_splits=len(np.unique(groups))), 
+                                cv=GroupKFold(n_splits=len(np.unique(groups))),
                                 return_train_score=False,
                                 return_estimator=True, n_jobs=2)
-        
+
         # scores are in the order of the groups, so the first row out is the
         # result of training on the other groups, and testing on the first group
         self.scores = scores
-        
+
         return scores
-    
-    
+
+
     def save_crossval_model(self, save_path):
+<<<<<<< HEAD
+        dump(scores, save_path)
+
+
+
+if __name__ == "__main__":
+
+    model = KNeighborsClassifier(n_neighbors=3)
+#    model = ExtraTreesClassifier(n_estimators=100)
+#    model = svm.SVC()
+
+    clf = Classifier(model)
+
+=======
         dump(self.scores, save_path)
     
 def wrapper(path, split_col, savePath):
@@ -186,12 +200,25 @@ if __name__ == "__main__":
     
     # clf = Classifier(model)
     
+>>>>>>> 55dfb07d127131f5263d6208b41e4b2a03f28d7d
 #    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
 #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
     # save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
 
     # data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
 
+<<<<<<< HEAD
+
+    data1 = pd.read_csv(data_path1)
+    data2 = pd.read_csv(data_path2)
+    labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
+
+    data1 = data1[[True if x in labels else False for x in data1.label]]
+    data2 = data2[[True if x in labels else False for x in data2.label]]
+
+    all_feats = data1.columns
+    acc_feats = [f for f in all_feats if 'a_' in f]
+=======
     # data1 = pd.read_csv(data_path1)
     # # data2 = pd.read_csv(data_path2)
     # # labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
@@ -201,9 +228,22 @@ if __name__ == "__main__":
     
     # all_feats = data1.columns
     # acc_feats = [f for f in all_feats if 'a_' in f]
+>>>>>>> 55dfb07d127131f5263d6208b41e4b2a03f28d7d
 
     # clf.load_data(data1, acc_feats)
 
+<<<<<<< HEAD
+
+    all_feats = data2.columns
+    acc_feats = [f for f in all_feats if 'a_' in f]
+
+    clf.load_data(data2, acc_feats)
+
+    scores = clf.crossval(split_col='dataset')
+
+    #clf.save_crossval_model('test.pkl')
+    np.savetxt(save_path,scores['test_score'])
+=======
     
     # all_feats = data2.columns
     # acc_feats = [f for f in all_feats if 'a_' in f]
@@ -231,3 +271,4 @@ if __name__ == "__main__":
     wrapper(data_path, 'user', save_path)
 
 
+>>>>>>> 55dfb07d127131f5263d6208b41e4b2a03f28d7d
