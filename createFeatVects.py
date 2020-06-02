@@ -91,6 +91,12 @@ def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None
     actFeatureMatrix['user'] = userLabels
     actFeatureMatrix['label'] = actFeatureLabels 
     
+    # fix gravity in the createFeatVectors file for motion sense.
+    allFeats = actFeatureMatrix.columns
+    accFeats = [f for f in allFeats if 'a_' in f]
+    for val in accFeats:
+        actFeatureMatrix[val] += actFeatureMatrix[val.replace('a','g')]
+    
     if save_path is not None:
         actFeatureMatrix.to_csv(os.path.join(output_path, saveLabels[d_set]+"_featureMat.csv"), index=False) 
     
