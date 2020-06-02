@@ -8,6 +8,7 @@ Created on Mon May 25 23:16:15 2020
 
 from sklearn.model_selection import cross_validate
 from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import cross_val_predict
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn import svm
@@ -80,18 +81,20 @@ class Classifier:
 
         self.data.append(data_to_append)
 
-    def crossval(self, split_col = 'user', cols = None):
+    def crossval(self, split_col = 'user', cols = None, col_score_split=['user','label']):
         """
         Creates a crossvalidated classifier
 
         Parameters
         ----------
-        split_col : TYPE, optional
-            DESCRIPTION. The default is 'user'.
+        split_col : str , optional
+            column to perform the crossvalidation over
 
         cols : list, optional
             list of columns to use in the classifier. If none is given then keeps all
-
+            
+        col_score_split: list of str
+            list of columns to calculate the score breakdown on
 
         Returns
         -------
@@ -109,53 +112,82 @@ class Classifier:
         #select columns
         y = all_data['label'].values
         groups = all_data[split_col].values
-
+        cv = GroupKFold(n_splits=len(np.unique(groups)))
+        
         if cols is None:
             cols_ = [c for c in all_data.columns if c not in ['label','dataset','user']]
         else:
             cols_ = cols
+        
 
         X = all_data[cols_].to_numpy()
 
         print("Beginning model evaluation...")
-        scores = cross_validate(estimator = self.model,
-                                X = X, y = y, groups=groups,
-                                cv=GroupKFold(n_splits=len(np.unique(groups))),
-                                return_train_score=False,
-                                return_estimator=True, n_jobs=2)
+        # scores = cross_validate(estimator = self.model,
+        #                         X = X, y = y, groups=groups,
+        #                         cv=cv,
+        #                         return_train_score=False,
+        #                         return_estimator=True, n_jobs=2)
+        
+        preds = cross_val_predict(estimator=self.model,
+                                  X=X, y=y, groups=groups,
+                                  cv=cv, n_jobs=2)
 
         # scores are in the order of the groups, so the first row out is the
         # result of training on the other groups, and testing on the first group
-        self.scores = scores
+        #self.scores = scores
+        self.preds = preds
+        
+        #do a score breakdown by unique value
+        scores = {}
+        for col in col_score_split:
+            unique_vals = all_data[col].unique()
+            accuracy = np.zeros(len(unique_vals))
+            for i,val in enumerate(unique_vals):
+                entries = all_data[col] == val
+                accuracy[i] = np.sum(self.preds[entries] == y[entries])/np.sum(entries)
+                
+            scores[col] = pd.DataFrame({col:unique_vals,'accuracy':accuracy})
 
         return scores
-
+    
+    
 
     def save_crossval_model(self, save_path):
         dump(self.scores, save_path)
 
 
-def wrapper(path, split_col, savePath):
+
+def wrapper(path_in, split_col, savePath, col_score_split=['user','label']):
     """
     wrapper for cross val classifier: applies 3 models, to the accerleration, and gyroscope data
 
     Parameters
     ----------
-    path : string
+    path : string or list of str, dataframe or list of dataframe
         path to the csv of interest for running the classifiers.
     split_col: string
         which column to use for cross validataion
     savePath: string
         where to save the csv
+    col_score_split: list of str
+       list of columns to calculate the score breakdown on
+
     Returns
     -------
     None.
 
     """
-    
-    data = pd.read_csv(path)
-    all_feats = data.columns
-    acc_feats = [f for f in all_feats if 'a_' in f or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
+    if isinstance(path_in, str):
+        data = [pd.read_csv(path_in)]
+    elif isinstance(path_in, pd.core.frame.DataFrame):
+        data = [path_in]
+    elif isinstance(path_in, list):
+        if isinstance(path_in[0], str):
+            data = [pd.read_csv(p) for p in path_in]
+        else:
+            data = [p for p in path_in]
+        
     
     modelList = []
     model = KNeighborsClassifier(n_neighbors=3)
@@ -167,52 +199,62 @@ def wrapper(path, split_col, savePath):
     
     modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
     
-    scoreDf = pd.DataFrame()
-    scoreDf['user'] = sorted(data.user.unique())
+    scoreDf_list = [pd.DataFrame() for x in col_score_split]
+    for i_col, col in enumerate(col_score_split):
+        scoreDf_list[i_col][col] = list(data[0][col].unique())+['mean','std']
+    
     for idx, model in enumerate(modelList):
         clf = Classifier(model)
-        clf.load_data(data, acc_feats)
-        scores = clf.crossval(split_col=split_col)
-        scoreDf[modelNames[idx]] = scores['test_score']
-        
-    scoreDf.to_csv(savePath, index = False)
+        for d_set in data:
+            all_feats = d_set.columns
+            acc_feats = [f for f in all_feats if 'a_' in f or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
+            clf.load_data(d_set, acc_feats)
+            
+        scores = clf.crossval(split_col=split_col,col_score_split=col_score_split)
+        for i_col, col in enumerate(col_score_split):
+            accuracy = scores[col]['accuracy'].values
+            scoreDf_list[i_col][modelNames[idx]] = list(accuracy)+[np.mean(accuracy), np.std(accuracy)]
     
-    return
+    for i in range(len(scoreDf_list)):
+        scoreDf_list[i].to_csv(savePath+"_"+col_score_split[i]+'.csv', index = False)
+    
+    return scoreDf_list
     
 if __name__ == "__main__":
     
-    # model = KNeighborsClassifier(n_neighbors=3)
-#    model = ExtraTreesClassifier(n_estimators=100)
-#    model = svm.SVC()
+#     # model = KNeighborsClassifier(n_neighbors=3)
+#     model = ExtraTreesClassifier(n_estimators=100)
+# #    model = svm.SVC()
     
-    # clf = Classifier(model)
+#     clf = Classifier(model)
     
-#    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
-#    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
-    # save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
+#     data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/MotionSense_FeatMat.csv'
+# #    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/extra_trees.csv'
+#     # save_path = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI_motionSense/K-NN.csv'
 
-    # data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
+#     # data_path1 = '/Users/kaikaneshina/Documents/MATH178/project_data/UCI HAR Dataset/UCI_HAR_FeatMat.csv'
 
+#     data = pd.read_csv(data_path)
 
-    # data1 = pd.read_csv(data_path1)
-    # # data2 = pd.read_csv(data_path2)
-    # # labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
+#     # data1 = pd.read_csv(data_path1)
+#     # # data2 = pd.read_csv(data_path2)
+#     # # labels = list(set(data2.label.unique()).intersection(set(data1.label.unique())))
     
-    # # data1 = data1[[True if x in labels else False for x in data1.label]]
-    # # data2 = data2[[True if x in labels else False for x in data2.label]]
+#     # # data1 = data1[[True if x in labels else False for x in data1.label]]
+#     # # data2 = data2[[True if x in labels else False for x in data2.label]]
     
-    # all_feats = data1.columns
-    # acc_feats = [f for f in all_feats if 'a_' in f]
+#     all_feats = data.columns
+#     acc_feats = [f for f in all_feats if 'a_' in f]
 
 
-    # clf.load_data(data1, acc_feats)
+#     clf.load_data(data, acc_feats)
     
-    # all_feats = data2.columns
-    # acc_feats = [f for f in all_feats if 'a_' in f]
+#     # all_feats = data.columns
+#     # acc_feats = [f for f in all_feats if 'a_' in f]
 
-    # clf.load_data(data2, acc_feats)
+#     # clf.load_data(data2, acc_feats)
     
-    # scores = clf.crossval(split_col='user')
+#     scores = clf.crossval(split_col='user')
     
     #clf.save_crossval_model('test.pkl')
     # np.savetxt(save_path,scores['test_score'])
@@ -223,12 +265,16 @@ if __name__ == "__main__":
 
     # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/motionSense/MotionSense_FeatMat_Rotated.csv'
     # save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/motionSense/userCrossVal/rotated/rotated128.csv'
-
-
-    # mobiact: regular
-    data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
-    save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/mobiAct/userCrossVal/raw/raw128.csv'
-    # mobiact: rotated
-    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat_Rotated.csv'
-    wrapper(data_path, 'user', save_path)
+    
+    # data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrix_128/MotionSense_FeatMat_Rotated.csv'
+    data_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrix_128/MotionSense_FeatMat.csv'
+    data = pd.read_csv(data_path)
+    save_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/motionSense/normal_split_by_activity/accuracy'
+    
+    # # mobiact: regular
+    # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv'
+    # save_path = '/Users/kaikaneshina/Documents/GitHub/Colin_Eli_Kai_Math178_Final/results/mobiAct/userCrossVal/raw/raw128.csv'
+    # # mobiact: rotated
+    # # data_path = '/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat_Rotated.csv'
+    scoreDf_list = wrapper(data_path, 'user', save_path,['user','label'])
 
