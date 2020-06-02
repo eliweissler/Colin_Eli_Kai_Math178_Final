@@ -81,7 +81,7 @@ for folder in paths:
          
                 actFeatureMatrix = pd.DataFrame(np.array(actFeatureVectors), columns = col_labels)
                 actFeatureMatrix['dataset'] = 'mobiAct'
-                actFeatureMatrix['user'] = user 
+                actFeatureMatrix['user'] = 'mobiAct_' + str(user)
                 actFeatureMatrix['label'] = newLabels[lbl]
                 dfList.append(actFeatureMatrix)
         
