@@ -63,23 +63,27 @@ for folder in paths:
         vals = df[feats].to_numpy()
         resamp = np.concatenate([signal.resample(vals[i:i+87,:],50) for i in idxs])
         dfNew = pd.DataFrame(resamp, columns = feats)
-            
-        # determine spacing
-        spacing = np.arange(0,dfNew.shape[0],overlap)
-        # skip the last value in the spacing since we add overlap*2 to each value 
-        # for indexinga
         
-        for idx in spacing[:-2]:
-            subset = dfNew.iloc[idx:idx + numObs][feats]
-            featVect = subset.values.flatten()
-            actFeatureVectors.append(featVect)
-            
- 
-        actFeatureMatrix = pd.DataFrame(np.array(actFeatureVectors), columns = col_labels)
-        actFeatureMatrix['dataset'] = 'mobiAct'
-        actFeatureMatrix['user'] = user 
-        actFeatureMatrix['label'] = newLabels[lbl]
-        dfList.append(actFeatureMatrix)
+        if df.shape[0] > 500:
+            dfNew = dfNew.iloc[500:,:]
+            dfNew.reset_index(inplace = True, drop = True)
+    
+            # determine spacing
+            spacing = np.arange(0,dfNew.shape[0],overlap)
+            # skip the last value in the spacing since we add overlap*2 to each value 
+            # for indexinga
+            if len(spacing)>4:
+                for idx in spacing[:-2]:
+                    subset = dfNew.iloc[idx:idx + numObs][feats]
+                    featVect = subset.values.flatten()
+                    actFeatureVectors.append(featVect)
+                    
+         
+                actFeatureMatrix = pd.DataFrame(np.array(actFeatureVectors), columns = col_labels)
+                actFeatureMatrix['dataset'] = 'mobiAct'
+                actFeatureMatrix['user'] = user 
+                actFeatureMatrix['label'] = newLabels[lbl]
+                dfList.append(actFeatureMatrix)
         
 total = pd.concat(dfList,ignore_index = True,sort=False)
 total.to_csv('/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv',
