@@ -108,7 +108,7 @@ def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None
 if __name__ == "__main__":
     
     # user defined param: number of x, y, z pairs to put in a single vector
-    numObs = 128
+    numObs = 256
     overlap = numObs//2    
 
     ##MOTIONSENSE DATASET
