@@ -11,6 +11,7 @@ from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import cross_val_predict
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.metrics import confusion_matrix
 from sklearn import svm
 from joblib import dump
 
@@ -144,6 +145,7 @@ class Classifier:
         # result of training on the other groups, and testing on the first group
         #self.scores = scores
         self.preds = preds
+        self.y_true = y
         
         #do a score breakdown by unique value
         scores = {}
@@ -201,17 +203,19 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
         
     
     modelList = []
-    model = KNeighborsClassifier(n_neighbors=3)
-    modelList.append(model)
+    # model = KNeighborsClassifier(n_neighbors=3)
+    # modelList.append(model)
     model = ExtraTreesClassifier(n_estimators=100)    
     modelList.append(model)
     # model = svm.SVC()
     # modelList.append(model)
     
-    modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
+    modelNames=['extra-Trees']
+    # modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
     
     scoreDf_list = [pd.DataFrame() for x in col_score_split]
     preds_list = []
+    y_true_list = []
     for i_col, col in enumerate(col_score_split):
         unique_vals = []
         for d_set in data:
@@ -227,6 +231,7 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
             
         scores = clf.crossval(split_col=split_col,col_score_split=col_score_split)
         preds_list.append(clf.preds)
+        y_true_list.append(clf.y_true)
         for i_col, col in enumerate(col_score_split):
             accuracy = scores[col]['accuracy'].values
             scoreDf_list[i_col][modelNames[idx]] = list(accuracy)+[np.mean(accuracy), np.std(accuracy)]
@@ -236,6 +241,11 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
     
     for i,m_name in enumerate(modelNames):
         np.savetxt(savePath+"_pred_"+m_name+'.csv',preds_list[i],fmt="%s")
+        labels=np.unique(y_true_list[i])
+        #rows are truth columns are predicted
+        confusion_mat = confusion_matrix(y_true_list[i], preds_list[i],labels =labels)
+        confusion_mat = pd.DataFrame(data=confusion_mat, index=labels,columns=labels)
+        confusion_mat.to_csv(savePath+"_confusion_matrix_"+m_name+'.csv')
     
     
     return scoreDf_list, preds_list
@@ -312,7 +322,8 @@ if __name__ == "__main__":
                                               'splits':['user','label','dataset']}
         }
     
-    config = cross_dataset
+    # config = cross_dataset
+    config=configs128
     for setting in config:
         data = config[setting]['data']
         cv_col = config[setting]['cv_col']
