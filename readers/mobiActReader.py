@@ -25,7 +25,7 @@ newColNames = {'acc_x':'a_x', 'acc_y':'a_y', 'acc_z':'a_z', 'gyro_x':'rot_x',
            'gyro_y':'rot_y', 'gyro_z':'rot_z', 'azimuth':'yaw'}
 newLabels = {'WAL':'wlk', 'STU':'ups', 'STN':'dws', 'STD':'std', 'JOG':'jog', 'SIT':'sit'}
 
-numObs = 128
+numObs = 256
 overlap = int(numObs/2)
 
 cols = ['a_x', 'a_y', 'a_z', 'rot_x', 'rot_y', 'rot_z', 'yaw', 'pitch',

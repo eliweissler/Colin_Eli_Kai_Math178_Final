@@ -11,7 +11,7 @@ import pandas as pd
 import os
 import numpy as np
 
-def rotateFeatMats(featMat, savePath, fname, featLen = 128):
+def rotateFeatMats(featMat, savePath, fname, featLen = 256):
     """
     rotate the feature matrix df rows by roll pitch and yaw
     """
@@ -30,13 +30,6 @@ def rotateFeatMats(featMat, savePath, fname, featLen = 128):
 
     # rotate acc by gyro data
     accRotated = rotate_to_zero(accReshaped, gyroReshaped)
-
-    accRotated = accRotated.reshape(acc.shape)
-
-    # rotate the rotated data by the pca axis
-    rotPCAData, _ = np.apply_along_axis(PCA_rotate_data, 1, accRotated)
-
-    rotPCAData = np.concatenate(rotPCAData).reshape(acc.shape)
 
     accRotated = accRotated.reshape(acc.shape)
     
