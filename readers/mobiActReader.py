@@ -14,12 +14,12 @@ from scipy import signal
 pd.options.mode.chained_assignment = None  
 
 
-paths = ['/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/WAL',
-'/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/STU',
-'/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/STN',
-'/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/STD',
-'/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/SIT',
-'/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/Annotated Data/JOG']
+paths = ['/Users/collopa/Desktop/nonlinear/project/data/mobiact/WAL',
+'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STU',
+'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STN',
+'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STD',
+'/Users/collopa/Desktop/nonlinear/project/data/mobiact/SIT',
+'/Users/collopa/Desktop/nonlinear/project/data/mobiact/JOG']
 
 newColNames = {'acc_x':'a_x', 'acc_y':'a_y', 'acc_z':'a_z', 'gyro_x':'rot_x', 
            'gyro_y':'rot_y', 'gyro_z':'rot_z', 'azimuth':'yaw'}
@@ -53,6 +53,8 @@ for folder in paths:
         df.reset_index(inplace = True, drop = True)
         
         df.rename(columns = newColNames, inplace= True)
+
+        df[['a_x', 'a_y', 'a_z']] = df[['a_x', 'a_y', 'a_z']]/9.81
         
         df['label'] = df['label'].map(newLabels)
         feats = df.columns[df.columns!='label']
@@ -84,9 +86,11 @@ for folder in paths:
                 actFeatureMatrix['user'] = 'mobiAct_' + str(user)
                 actFeatureMatrix['label'] = newLabels[lbl]
                 dfList.append(actFeatureMatrix)
-        
+
+
 total = pd.concat(dfList,ignore_index = True,sort=False)
-total.to_csv('/Users/kaikaneshina/Documents/MATH178/project_data/MobiAct_Dataset_v2.0/mobiAct_FeatMat.csv',
+
+total.to_csv('/Users/collopa/Desktop/nonlinear/project/data/mobiAct_FeatMat_256.csv',
              index = False)
             
         
