@@ -24,11 +24,15 @@ def rotateFeatMats(featMat, savePath, fname, featLen = 256):
 
     # rotate acc using gyro data. Only rotate the unique elements 
     # to avoid duplicating work on the overlap
-    acc_gyro, inverse = np.unique(np.hstack((acc,gyro)), return_inverse=True, axis=0)    
-    acc_unique_rotated = rotate_to_zero(acc_gyro[:,:3], acc_gyro[:,3:])
-    accRotated = acc_unique_rotated[inverse]
+    if featMat.shape[0] > 1:
+        acc_gyro, inverse = np.unique(np.hstack((acc,gyro)), return_inverse=True, axis=0)    
+        acc_unique_rotated = rotate_to_zero(acc_gyro[:,:3], acc_gyro[:,3:])
+        accRotated = acc_unique_rotated[inverse]
+    else:
+        accRotated = rotate_to_zero(acc, gyro)
 
     accRotated = accRotated.reshape(-1,featLen*3)
+    
     
     print('gyro rotation done')
     
