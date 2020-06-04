@@ -54,6 +54,8 @@ def PCA_rotate_data(feature_vector, n_points=256, nonlinear=False):
     """
     Rotate the data to align with the principal components
     of our acceleration data.
+    
+    feature vector is in the form [a_x_0, a_y_0, a_z_0, a_x_1,......]
 
     Component with largest eigenvector will be z-axis
     Second largest will be y-axis, I guess.
