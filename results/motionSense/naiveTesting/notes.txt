@@ -1,2 +1,0 @@
-cross validation done by users on only the motion sense data set
-done only on the users acceleration data (a_x, a_y, a_z), no gravity was added in 

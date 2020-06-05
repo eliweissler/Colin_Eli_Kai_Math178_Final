@@ -1,9 +1,0 @@
-These results were made with the following params:
-
-for motionsense the acceleration data has been merged with the gravity.
-
-raw: 
-	raw128: used the raw acceleration and gyroscope data
-	noGryoRaw128: used acceleration only
-
-rotated: used the rotated acceleration only

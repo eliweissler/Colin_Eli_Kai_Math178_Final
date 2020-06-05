@@ -24,7 +24,7 @@ import scipy
 import matplotlib 
 
 from classifiers.quaternions import PCA_rotate_data,rotate_to_zero,rotate_quat
-from classifiers.mobiActRotateByGyro import rotateFeatMats
+from classifiers.rotateByGyro import rotateFeatMats
 
 from featMatHelpers import getAcc, getYPR
 

@@ -1,3 +1,0 @@
-ran on the UCI and motion sense dataset combined
-cross validated by dataset 
-used only the ADLs (labels) aka activities that were in both datasets
