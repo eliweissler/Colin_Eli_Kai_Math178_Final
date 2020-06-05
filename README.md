@@ -32,7 +32,7 @@ Repository with code for the math 178 final project, summer 2020
 
 **1) classifiers: code related to the classifier or feature-generation**
 
-  - crossvalidated_classifier.py: Class for automating the training and evaluation of our classifier
+  * crossvalidated_classifier.py: Class for automating the training and evaluation of our classifier
   - featMatHelpers.py: Utility function for working with our feature matrices
   - features.py: Functions to generate hand-crafted features including torsion and curvature
   -linearRegression.py: Wrapper for performing linear regression easily
