@@ -13,7 +13,7 @@ import numpy as np
 
 from featMatHelpers import getAcc, getYPR
 
-def rotateFeatMats(featMat, savePath, fname, featLen = 256):
+def rotateFeatMats(featMat, savePath, fname, featLen = 256, just_pca = True):
     """
     rotate the feature matrix df rows by roll pitch and yaw
     """
@@ -21,18 +21,23 @@ def rotateFeatMats(featMat, savePath, fname, featLen = 256):
     # pick out the acceleration and gyroscope data
     acc = getAcc(featMat)
     gyro = getYPR(featMat)
-
-    # rotate acc using gyro data. Only rotate the unique elements 
-    # to avoid duplicating work on the overlap
-    if featMat.shape[0] > 1:
-        acc_gyro, inverse = np.unique(np.hstack((acc,gyro)), return_inverse=True, axis=0)    
-        acc_unique_rotated = rotate_to_zero(acc_gyro[:,:3], acc_gyro[:,3:])
-        accRotated = acc_unique_rotated[inverse]
-    else:
-        accRotated = rotate_to_zero(acc, gyro)
-
-    accRotated = accRotated.reshape(-1,featLen*3)
     
+    if not just_pca:
+
+        # rotate acc using gyro data. Only rotate the unique elements 
+        # to avoid duplicating work on the overlap
+        if featMat.shape[0] > 1:
+            acc_gyro, inverse = np.unique(np.hstack((acc,gyro)), return_inverse=True, axis=0)    
+            acc_unique_rotated = rotate_to_zero(acc_gyro[:,:3], acc_gyro[:,3:])
+            accRotated = acc_unique_rotated[inverse]
+        else:
+            accRotated = rotate_to_zero(acc, gyro)
+    
+        accRotated = accRotated.reshape(-1,featLen*3)
+        
+    else:
+        accRotated = acc.reshape(-1,featLen*3)
+        
     
     print('gyro rotation done')
     
@@ -72,38 +77,66 @@ if __name__ == '__main__':
     # fname = 'MotionSense_FeatMat_Rotated.csv'
     
     ###Eli
-    path256 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/Feature_Matrix_256'
-    path128 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/Feature_Matrix_128'
+    path256 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/256_data'
+    path128 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/128_data'
     ##MotionSense256
-    ms256 = {'path' : os.path.join(path256,'MotionSense_FeatMat_256.csv'),
-              'savePath': path256,
-              'fname':'MotionSense_FeatMat_256_Rotated.csv',
+    # ms256 = {'path' : os.path.join(path256,'MotionSense_FeatMat_256.csv'),
+    #           'savePath': path256,
+    #           'fname':'MotionSense_FeatMat_256_Rotated.csv',
+    #           'featLen':256
+    #           }
+    
+    # ma256 = {'path': os.path.join(path256,'mobiAct_FeatMat_256.csv'),
+    #           'savePath': path256,
+    #           'fname': 'mobiAct_FeatMat_256_Rotated.csv',
+    #           'featLen':256
+    #           }
+    
+    
+    # ##MotionSense128
+    # ms128 = {'path' : os.path.join(path128,'MotionSense_FeatMat.csv'),
+    #          'savePath': path128,
+    #          'fname': 'MotionSense_FeatMat_Rotated.csv',
+    #          'featLen':128
+    #          }
+    
+    # ma128 = {'path' : os.path.join(path128,'mobiAct_FeatMat.csv'),
+    #          'savePath':path128,
+    #          'fname':'mobiAct_FeatMat_Rotated.csv',
+    #          'featLen':128
+    #          }
+    
+    ms256 = {'path' : os.path.join(path256,'motion_sense','MotionSense_FeatMat_256.csv'),
+              'savePath': os.path.join(path256,'motion_sense'),
+              'fname':'MotionSense_FeatMat_256_PCA.csv',
               'featLen':256
               }
     
-    ma256 = {'path': os.path.join(path256,'mobiAct_FeatMat_256.csv'),
-              'savePath': path256,
-              'fname': 'mobiAct_FeatMat_256_Rotated.csv',
+    ma256 = {'path': os.path.join(path256,'mobiact','mobiAct_FeatMat_256.csv'),
+              'savePath': os.path.join(path256,'mobiact'),
+              'fname': 'mobiAct_FeatMat_256_PCA.csv',
               'featLen':256
               }
     
     
     ##MotionSense128
-    ms128 = {'path' : os.path.join(path128,'MotionSense_FeatMat.csv'),
-             'savePath': path128,
-             'fname': 'MotionSense_FeatMat_Rotated.csv',
+    ms128 = {'path' : os.path.join(path128,'motion_sense','MotionSense_FeatMat.csv'),
+             'savePath': os.path.join(path128,'motion_sense'),
+             'fname': 'MotionSense_FeatMat_PCA.csv',
              'featLen':128
              }
     
-    ma128 = {'path' : os.path.join(path128,'mobiAct_FeatMat.csv'),
-             'savePath':path128,
-             'fname':'mobiAct_FeatMat_Rotated.csv',
+    ma128 = {'path' : os.path.join(path128,'mobiact','mobiAct_FeatMat.csv'),
+             'savePath':os.path.join(path128,'mobiact'),
+             'fname':'mobiAct_FeatMat_PCA.csv',
              'featLen':128
              }
+    
     
     # to_run = [ms128]
-    to_run = [ma128, ma256, ms256]
+    # to_run = [ms128, ma128, ma256, ms256]
+    to_run = [ma256, ms256]
     
     for f in to_run:
         featMat = pd.read_csv(f['path'])
-        rotateFeatMats(featMat, f['savePath'], f['fname'], f['featLen'])
+        rotateFeatMats(featMat, f['savePath'], f['fname'], f['featLen'],just_pca=True)

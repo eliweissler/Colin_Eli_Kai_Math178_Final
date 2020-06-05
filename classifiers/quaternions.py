@@ -117,7 +117,7 @@ def rotate_to_zero(acc, ypr):
     """
     
     #create the rotations to rotate to zero
-    trans = R.from_euler('zxy',ypr).as_quat() #returns the scalar last
+    trans = R.from_euler('zyx',ypr).as_quat() #returns the scalar last
     trans = [Quaternion(imaginary = x[:-1], real = x[-1]) for x in trans]
     
     #apply the appropriate roation for each element

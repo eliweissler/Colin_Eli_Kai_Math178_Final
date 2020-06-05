@@ -203,7 +203,7 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
         
     
     modelList = []
-    model = KNeighborsClassifier(n_neighbors=3)
+    model = KNeighborsClassifier(n_neighbors=30)
     modelList.append(model)
     model = ExtraTreesClassifier(n_estimators=100)    
     modelList.append(model)
