@@ -56,6 +56,8 @@ for folder in paths:
 
         df[['a_x', 'a_y', 'a_z']] = df[['a_x', 'a_y', 'a_z']]/9.81
         
+        df[['yaw', 'pitch', 'roll']] = df[['yaw', 'pitch', 'roll']]*(np.pi/180) %(2*np.pi)
+
         df['label'] = df['label'].map(newLabels)
         feats = df.columns[df.columns!='label']
 
