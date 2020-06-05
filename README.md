@@ -26,6 +26,7 @@ Repository with code for the math 178 final project, summer 2020
 ## Files
 
 1) enviroment.yml: conda enviroment file to recreate conditions that the code ran in
+2) To-Do.txt: our to do list. Much to do.
 
 ## Folders
 
@@ -44,4 +45,20 @@ Repository with code for the math 178 final project, summer 2020
   *skikit_supervised.ipynb: Notebook for prototyping the classifier, taken from sklearn example
   *neural_net.ipynb: Now abandoned attempt at recreating a published neural network for human activity recognition
   *Human Activity Recognition with Keras and CoreML original.ipynb: Another neural network test notebook
+  *basic_quaternions.ipynb: Some basic quaternion operations
+  *alignAccelerations.ipynb: Testing out the rotating and aligning scheme
+  
+  4) readers: all the necessary data-wrangling
+   *createFeatVects.py: general code for creating feature vectors from a csv of individual observations
+   *mobiActReader.py: code for assembling the mobiAct data from the file structure it comes in and for resampling to 50 hz. Also creates feature vectors for it.
+   *motionsense_reader.py: code for assembling the motionsense data into a big csv of observations
+   *UCI_HAR_reader.py: code for assembling the UCI-HAR data into a big csv of observations
+   
+  5) visualizing_data: code for visualizing our data and creating figures
+   *fftVisualization.py: visualizing the power spectra of our acceleration data
+   *orientation_and_rotation_plots.py: creating plots of the acceleration over time and of the PCA axes
+   *pcaVisualization.py: creating plots of the PCA axes
+   *sphere_plot.py: (very messy) code for plotting data on a sphere
+   *spline_sphere_plot.py: code for plotting data on a sphere, with better interpolation
+   *visualization/visualization_2.ipynd: general purpose visualiztion notebook for testing
 
