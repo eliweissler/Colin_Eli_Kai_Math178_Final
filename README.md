@@ -30,38 +30,37 @@ Repository with code for the math 178 final project, summer 2020
 
 ## Folders
 
-1) classifiers: code related to the classifier or feature-generation
+**1) classifiers: code related to the classifier or feature-generation**
+
   - crossvalidated_classifier.py: Class for automating the training and evaluation of our classifier
   - featMatHelpers.py: Utility function for working with our feature matrices
   - features.py: Functions to generate hand-crafted features including torsion and curvature
-  
-  *linearRegression.py: Wrapper for performing linear regression easily
-  
-  *quaternions.py: Functions for performing rotations using quaternions
-  
-  *rotateByGyro: Function for performing our rotation and alignment by PCA
+  -linearRegression.py: Wrapper for performing linear regression easily
+  -quaternions.py: Functions for performing rotations using quaternions
+  -rotateByGyro: Function for performing our rotation and alignment by PCA
   
   
- 2) papers: pdfs of papers we read, along with some notes in a .txt
+ **2) papers: pdfs of papers we read, along with some notes in a .txt**
  
- 3) prototyping: the poorly-written first attempts where we tested stuff
-  *skikit_supervised.ipynb: Notebook for prototyping the classifier, taken from sklearn example
-  *neural_net.ipynb: Now abandoned attempt at recreating a published neural network for human activity recognition
-  *Human Activity Recognition with Keras and CoreML original.ipynb: Another neural network test notebook
-  *basic_quaternions.ipynb: Some basic quaternion operations
-  *alignAccelerations.ipynb: Testing out the rotating and aligning scheme
+ **3) prototyping: the poorly-written first attempts where we tested stuff**
+ 
+  -skikit_supervised.ipynb: Notebook for prototyping the classifier, taken from sklearn example
+  -neural_net.ipynb: Now abandoned attempt at recreating a published neural network for human activity recognition
+  -Human Activity Recognition with Keras and CoreML original.ipynb: Another neural network test notebook
+  -basic_quaternions.ipynb: Some basic quaternion operations
+  -alignAccelerations.ipynb: Testing out the rotating and aligning scheme
   
-  4) readers: all the necessary data-wrangling
-   *createFeatVects.py: general code for creating feature vectors from a csv of individual observations
-   *mobiActReader.py: code for assembling the mobiAct data from the file structure it comes in and for resampling to 50 hz. Also creates feature vectors for it.
-   *motionsense_reader.py: code for assembling the motionsense data into a big csv of observations
-   *UCI_HAR_reader.py: code for assembling the UCI-HAR data into a big csv of observations
+  **4) readers: all the necessary data-wrangling**
+   -createFeatVects.py: general code for creating feature vectors from a csv of individual observations
+   -mobiActReader.py: code for assembling the mobiAct data from the file structure it comes in and for resampling to 50 hz. Also creates feature vectors for it.
+   -motionsense_reader.py: code for assembling the motionsense data into a big csv of observations
+   -UCI_HAR_reader.py: code for assembling the UCI-HAR data into a big csv of observations
    
-  5) visualizing_data: code for visualizing our data and creating figures
-   *fftVisualization.py: visualizing the power spectra of our acceleration data
-   *orientation_and_rotation_plots.py: creating plots of the acceleration over time and of the PCA axes
-   *pcaVisualization.py: creating plots of the PCA axes
-   *sphere_plot.py: (very messy) code for plotting data on a sphere
-   *spline_sphere_plot.py: code for plotting data on a sphere, with better interpolation
-   *visualization/visualization_2.ipynd: general purpose visualiztion notebook for testing
+  **5) visualizing_data: code for visualizing our data and creating figures**
+   -fftVisualization.py: visualizing the power spectra of our acceleration data
+   -orientation_and_rotation_plots.py: creating plots of the acceleration over time and of the PCA axes
+   -pcaVisualization.py: creating plots of the PCA axes
+   -sphere_plot.py: (very messy) code for plotting data on a sphere
+   -spline_sphere_plot.py: code for plotting data on a sphere, with better interpolation
+   -visualization/visualization_2.ipynd: general purpose visualiztion notebook for testing
 
