@@ -150,7 +150,7 @@ class Classifier:
         #do a score breakdown by unique value
         scores = {}
         for col in col_score_split:
-            unique_vals = all_data[col].unique()
+            unique_vals = np.unique(all_data[col])
             accuracy = np.zeros(len(unique_vals))
             for i,val in enumerate(unique_vals):
                 entries = all_data[col] == val
@@ -203,15 +203,15 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
         
     
     modelList = []
-    # model = KNeighborsClassifier(n_neighbors=3)
-    # modelList.append(model)
+    model = KNeighborsClassifier(n_neighbors=3)
+    modelList.append(model)
     model = ExtraTreesClassifier(n_estimators=100)    
     modelList.append(model)
     # model = svm.SVC()
     # modelList.append(model)
     
-    modelNames=['extra-Trees']
-    # modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
+    # modelNames=['extra-Trees']
+    modelNames = ['k-NN', 'extra-Trees']#, 'SVC']
     
     scoreDf_list = [pd.DataFrame() for x in col_score_split]
     preds_list = []
@@ -219,14 +219,14 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
     for i_col, col in enumerate(col_score_split):
         unique_vals = []
         for d_set in data:
-            unique_vals = unique_vals + list(d_set[col].unique())
+            unique_vals = unique_vals + list(np.unique(d_set[col]))
         scoreDf_list[i_col][col] = list(np.unique(unique_vals))+['mean','stdev']
     
     for idx, model in enumerate(modelList):
         clf = Classifier(model)
         for d_set in data:
             all_feats = d_set.columns
-            acc_feats = [f for f in all_feats if 'a_' in f or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
+            acc_feats = sorted([f for f in all_feats if 'a_' in f]) #or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
             clf.load_data(d_set, acc_feats)
             
         scores = clf.crossval(split_col=split_col,col_score_split=col_score_split)
@@ -308,22 +308,42 @@ if __name__ == "__main__":
     #colin set this to 2, eli/kai to 1
     n_jobs = 1
     
-    ms_normal = pd.read_csv('/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrix_128/MotionSense_FeatMat.csv')
-    ma_normal = pd.read_csv('/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrix_128/mobiAct_FeatMat.csv')
-    
+    path256 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/256_data'
+    path128 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/128_data'
+    path_ms_results = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/motionSense/'
    
-    configs128 = {'motionSense_normal': {'data':ms_normal,'cv_col':'user',
-                                         'save_path' : '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/motionSense/',
-                                         'splits':['user', 'label']}
-        }
+    # configs128 = {'motionSense_normal': {'data':ms_normal,'cv_col':'user',
+    #                                      'save_path' : '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/motionSense/',
+    #                                      'splits':['user', 'label']}
+    #     }
     
-    cross_dataset = {'cross_dataset_normal': {'data': [ms_normal,ma_normal],'cv_col':'dataset',
-                                              'save_path' : '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/combined_dfs/',
-                                              'splits':['user','label','dataset']}
-        }
+    # cross_dataset = {'cross_dataset_normal': {'data': [ms_normal,ma_normal],'cv_col':'dataset',
+    #                                           'save_path' : '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/combined_dfs/',
+    #                                           'splits':['user','label','dataset']}
+    #     }
+    
+    
+    
+    configs_ms = {'motionSense_128': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat.csv'),
+                                         'cv_col':'user',
+                                         'save_path' : path_ms_results,
+                                         'splits':['user', 'label']},
+                  'motionSense_256': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256.csv'),
+                                         'cv_col':'user',
+                                         'save_path' : path_ms_results,
+                                         'splits':['user', 'label']},
+                  'motionSense_128_Rotated': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat_Rotated.csv'),
+                                         'cv_col':'user',
+                                         'save_path' : path_ms_results,
+                                         'splits':['user', 'label']},
+                  'motionSense_256_Rotated': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256_Rotated.csv'),
+                                         'cv_col':'user',
+                                         'save_path' : path_ms_results,
+                                         'splits':['user', 'label']}
+                   }
     
     # config = cross_dataset
-    config=configs128
+    config=configs_ms
     for setting in config:
         data = config[setting]['data']
         cv_col = config[setting]['cv_col']
