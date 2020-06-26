@@ -18,7 +18,7 @@ def spline_accelerometer(feature_vec):
 
 
     #spline the accleration, aka alpha'
-    num = len(feature_vec)
+    num = len(feature_vec)/3
     t = np.arange(0,num) #define time interval
     a_x_spline = IUS(t, xline)
     a_y_spline = IUS(t, yline)
@@ -49,7 +49,7 @@ def calc_torsion(feature_vec):
     app_z_spline = ap_z_spline.derivative()
 
     #define time interval
-    num = len(feature_vec)
+    num = len(feature_vec)/3
     t = np.arange(0,num) #define time interval
 
     #calculate torsion
@@ -84,7 +84,7 @@ def calc_curvature(feature_vec):
     ap_z_spline = a_z_spline.derivative()
 
     #define time interval
-    num = len(feature_vec)
+    num = len(feature_vec)/3
     t = np.arange(0,num) #define time interval
     #calculate curvature
     curvL = []
@@ -137,3 +137,39 @@ def calc_pca(feature_vec):
     eigVects = pca.components_
 
     return eigVals, eigVects
+
+def calc_manifold_feats(feature_vec, smooth = True):
+    """
+
+    Parameters
+    ----------
+    feature_vec : TYPE: pandas df row
+        computes the curvature, curvature fft, torsion, and torsion fft on the given 
+        df row.
+
+    Returns
+    -------
+    df row.
+    
+    """
+    # calc curv
+    curv = calc_curvature(feature_vec)
+    # calc torsion
+    tors = calc_torsion(feature_vec)
+    if smooth:
+        curv = scipy.ndimage.filters.gaussian_filter1d(curv,2)
+        tors = scipy.ndimage.filters.gaussian_filter1d(tors,2)
+
+    # do FFT magnitude, only need to save the first half, since fft is symmetric
+    curvFFT = np.abs(np.fft.fft(curv))[:int(len(curv)/2)]
+    torsFFT = np.abs(np.fft.fft(tors))[:int(len(tors)/2)]
+
+    # new row will be ordered as the curvature, torsion, curv fft, tors fft
+    row = np.concatenate([curv,tors,curvFFT,torsFFT])
+    
+    return row
+                   
+                   
+                   
+                   
+                   
