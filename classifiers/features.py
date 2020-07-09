@@ -100,7 +100,7 @@ def calc_curvature(feature_vec):
 
     return curvL
 
-def calc_fft(feature_vec, smooth = True):
+def calc_fft(feature_vec, smooth = False):
     """
     takes in feature vector, splits it into its 3 components, and does the fft of each
     returns magnitude of fft for each component
@@ -138,7 +138,7 @@ def calc_pca(feature_vec):
 
     return eigVals, eigVects
 
-def calc_manifold_feats(feature_vec, smooth = True):
+def calc_manifold_feats(feature_vec, smooth = False):
     """
 
     Parameters
@@ -165,11 +165,66 @@ def calc_manifold_feats(feature_vec, smooth = True):
     torsFFT = np.abs(np.fft.fft(tors))[:int(len(tors)/2)]
 
     # new row will be ordered as the curvature, torsion, curv fft, tors fft
-    row = np.concatenate([curv,tors,curvFFT,torsFFT])
+    row = np.concatenate([curvFFT,torsFFT])
     
     return row
                    
-                   
-                   
+def hand_crafted(feature_vec):
+    """
+    Assumes we are given a df with only acceleration
+
+    Parameters
+    ----------
+    feature_vec : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    ax = feature_vec[0::3]
+    ay = feature_vec[1::3]
+    az = feature_vec[2::3]
+    # average acceleration 
+    avgAcc = [ax.mean(),ay.mean(),az.mean()]
+    # std of acceleration 
+    stdAcc = [ax.std(),ay.std(),az.std()]
+    
+    # do magnitude calculations
+    # create array of n x [ax,ay,az] for magnitude of the vector
+    arr = np.array([ax,ay,az]).T
+    n = arr.shape[0]
+    magnitude = np.linalg.norm(arr,axis =1)
+    
+    # avgMag 
+    avgMag = magnitude.sum()/n
+    stdMag = magnitude.std()
+    
+    # do absolute mean of acceleration for each
+    absAvgAcc = [ax.abs().mean(),ay.abs().mean(),az.abs().mean()]
+    
+    return np.array(avgAcc + stdAcc + absAvgAcc + [avgMag,stdMag])
+    
+def all_feats(feature_vec, smooth = False):
+    """
+    calculate all of our features
+
+    Parameters
+    ----------
+    feature_vec : TYPE
+        DESCRIPTION.
+    smooth : TYPE, optional
+        DESCRIPTION. The default is False.
+
+    Returns
+    -------
+    None.
+
+    """
+    hc = hand_crafted(feature_vec)
+    manifold = calc_manifold_feats(feature_vec)
+    
+    return np.append(manifold,hc)
                    
                    
