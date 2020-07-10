@@ -226,8 +226,9 @@ def wrapper(path_in, split_col, savePath, col_score_split=['user','label'],
         clf = Classifier(model)
         for d_set in data:
             all_feats = d_set.columns
-            acc_feats = sorted([f for f in all_feats if 'a_' in f]) #or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
-            clf.load_data(d_set, acc_feats)
+            # acc_feats = sorted([f for f in all_feats if 'a_' in f]) #or 'yaw_' in f or 'pitch_' in f or 'roll_' in f]
+            # clf.load_data(d_set, all_feats)
+            clf.load_data(d_set)
             
         scores = clf.crossval(split_col=split_col,col_score_split=col_score_split)
         preds_list.append(clf.preds)
@@ -308,9 +309,9 @@ if __name__ == "__main__":
     #colin set this to 2, eli/kai to 1
     n_jobs = 1
     
-    path256 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/256_data'
-    path128 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/128_data'
-    path_ms_results = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/motionSense/'
+    # path256 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/256_data'
+    # path128 = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/128_data'
+    # path_ms_results = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/results/motionSense/'
    
     # configs128 = {'motionSense_normal': {'data':ms_normal,'cv_col':'user',
     #                                      'save_path' : '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/Colin_Eli_Kai_Math178_Final/results/motionSense/',
@@ -324,26 +325,30 @@ if __name__ == "__main__":
     
     
     
-    configs_ms = {'motionSense_128': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat.csv'),
-                                         'cv_col':'user',
-                                         'save_path' : path_ms_results,
-                                         'splits':['user', 'label']},
-                  'motionSense_256': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256.csv'),
-                                         'cv_col':'user',
-                                         'save_path' : path_ms_results,
-                                         'splits':['user', 'label']},
-                  'motionSense_128_Rotated': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat_Rotated.csv'),
-                                         'cv_col':'user',
-                                         'save_path' : path_ms_results,
-                                         'splits':['user', 'label']},
-                  'motionSense_256_Rotated': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256_Rotated.csv'),
-                                         'cv_col':'user',
-                                         'save_path' : path_ms_results,
-                                         'splits':['user', 'label']}
-                   }
-    
-    # config = cross_dataset
-    config=configs_ms
+    # configs_ms = {'motionSense_128': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat.csv'),
+    #                                      'cv_col':'user',
+    #                                      'save_path' : path_ms_results,
+    #                                      'splits':['user', 'label']},
+    #               'motionSense_256': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256.csv'),
+    #                                      'cv_col':'user',
+    #                                      'save_path' : path_ms_results,
+    #                                      'splits':['user', 'label']},
+    #               'motionSense_128_Rotated': {'data':os.path.join(path128,'motion_sense','MotionSense_FeatMat_Rotated.csv'),
+    #                                      'cv_col':'user',
+    #                                      'save_path' : path_ms_results,
+    #                                      'splits':['user', 'label']},
+    #               'motionSense_256_Rotated': {'data':os.path.join(path256,'motion_sense','MotionSense_FeatMat_256_Rotated.csv'),
+    #                                      'cv_col':'user',
+    #                                      'save_path' : path_ms_results,
+    #                                      'splits':['user', 'label']}
+                   # }
+    ms_normal = '/Users/kaikaneshina/Documents/MATH178/project_data/Math189Testing/MotionSense_FeatMat256.csv'
+    ma_normal = '/Users/kaikaneshina/Documents/MATH178/project_data/Math189Testing/mobiAct_FeatMat_256.csv'
+    cross_dataset = {'cross_dataset_normal': {'data': [ms_normal,ma_normal],'cv_col':'dataset',
+                                              'save_path' : '/Users/kaikaneshina/Documents/MATH178/project_data/Math189Testing',
+                                              'splits':['user','label','dataset']}}
+    config = cross_dataset
+    # config=configs_ms
     for setting in config:
         data = config[setting]['data']
         cv_col = config[setting]['cv_col']
