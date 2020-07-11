@@ -258,7 +258,7 @@ def calc_pca(feature_vec):
 
     return eigVals, eigVects
 
-def calc_manifold_feats(feature_vec, smooth = False):
+def calc_manifold_feats(feature_vec, smooth = True):
     """
 
     Parameters
@@ -277,17 +277,21 @@ def calc_manifold_feats(feature_vec, smooth = False):
     # calc torsion
     tors = calc_torsion(feature_vec)
     if smooth:
-        curv = scipy.ndimage.filters.gaussian_filter1d(curv,2)
-        tors = scipy.ndimage.filters.gaussian_filter1d(tors,2)
-
+        curv = scipy.ndimage.filters.gaussian_filter1d(curv,5)
+        tors = scipy.ndimage.filters.gaussian_filter1d(tors,5)
+    hann = np.hanning(len(curv))
     # do FFT magnitude, only need to save the first half, since fft is symmetric
-    curvFFT = np.abs(np.fft.fft(curv))[:int(len(curv)/2)]
-    torsFFT = np.abs(np.fft.fft(tors))[:int(len(tors)/2)]
-
-    # new row will be ordered as the curvature, torsion, curv fft, tors fft
-    row = np.concatenate([curvFFT,torsFFT])
+    curvFFT = np.abs(np.fft.fft(hann*curv))[:25]
+    torsFFT = np.abs(np.fft.fft(hann*tors))[:25]
+    normCurv = max(curvFFT)
+    curvFFT /= normCurv
+    normTors = max(torsFFT)
+    torsFFT /= normTors
     
-    return row
+    # new row will be ordered as the curv fft, tors fft
+    row = np.concatenate([curvFFT,torsFFT])
+    # add on the max of the ffts that we normalized by
+    return np.append(row, [normCurv,normTors])
                    
 def hand_crafted(feature_vec):
     """
@@ -326,7 +330,7 @@ def hand_crafted(feature_vec):
     
     return np.array(avgAcc + stdAcc + absAvgAcc + [avgMag,stdMag])
     
-def all_feats(feature_vec, smooth = False):
+def all_feats(feature_vec, smooth = True):
     """
     calculate all of our features
 
