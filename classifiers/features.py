@@ -278,7 +278,9 @@ def calc_manifold_feats(feature_vec, smooth = True):
     tors = calc_torsion(feature_vec)
     if smooth:
         curv = scipy.ndimage.filters.gaussian_filter1d(curv,5)
+        curv -= np.mean(curv)
         tors = scipy.ndimage.filters.gaussian_filter1d(tors,5)
+        tors -= np.mean(tors)
     hann = np.hanning(len(curv))
     # do FFT magnitude, only need to save the first half, since fft is symmetric
     curvFFT = np.abs(np.fft.fft(hann*curv))[:25]
