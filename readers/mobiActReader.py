@@ -14,12 +14,15 @@ from scipy import signal
 pd.options.mode.chained_assignment = None  
 
 
-paths = ['/Users/collopa/Desktop/nonlinear/project/data/mobiact/WAL',
-'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STU',
-'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STN',
-'/Users/collopa/Desktop/nonlinear/project/data/mobiact/STD',
-'/Users/collopa/Desktop/nonlinear/project/data/mobiact/SIT',
-'/Users/collopa/Desktop/nonlinear/project/data/mobiact/JOG']
+# root = '/Users/collopa/Desktop/nonlinear/project/data/mobiact/'
+root = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Raw_Data/MobiAct_Dataset_v2.0/Annotated Data'
+
+paths = [os.path.join(root,'WAL'),
+         os.path.join(root,'STU'),
+         os.path.join(root,'STN'),
+         os.path.join(root,'STD'),
+         os.path.join(root,'SIT'),
+         os.path.join(root,'JOG')]
 
 newColNames = {'acc_x':'a_x', 'acc_y':'a_y', 'acc_z':'a_z', 'gyro_x':'rot_x', 
            'gyro_y':'rot_y', 'gyro_z':'rot_z', 'azimuth':'yaw'}
@@ -68,8 +71,8 @@ for folder in paths:
         resamp = np.concatenate([signal.resample(vals[i:i+87,:],50) for i in idxs])
         dfNew = pd.DataFrame(resamp, columns = feats)
         
-        if df.shape[0] > 500:
-            dfNew = dfNew.iloc[500:,:]
+        if df.shape[0] > 115:
+            dfNew = dfNew.iloc[115:,:]
             dfNew.reset_index(inplace = True, drop = True)
     
             # determine spacing
@@ -82,7 +85,7 @@ for folder in paths:
                     featVect = subset.values.flatten()
                     actFeatureVectors.append(featVect)
                     
-         
+        
                 actFeatureMatrix = pd.DataFrame(np.array(actFeatureVectors), columns = col_labels)
                 actFeatureMatrix['dataset'] = 'mobiAct'
                 actFeatureMatrix['user'] = 'mobiAct_' + str(user)
@@ -92,7 +95,10 @@ for folder in paths:
 
 total = pd.concat(dfList,ignore_index = True,sort=False)
 
-total.to_csv('/Users/collopa/Desktop/nonlinear/project/data/mobiAct_FeatMat_256.csv',
+
+# out = '/Users/collopa/Desktop/nonlinear/project/data/mobiAct_FeatMat_256.csv'
+out = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/'+str(numObs)+'_data/mobiact/mobiAct_FeatMat_'+str(numObs)+'.csv'
+total.to_csv(out,
              index = False)
             
         

@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul  9 22:51:49 2020
+
+@author: Eli
+"""
+import os
+import numpy as np
+import pandas as pd
+from createFeatVects import createFeatVects
+from classifiers.featMatHelpers import getAcc
+
+dataDir = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Raw_Data/Custom Data'
+newLabels = {'Walking':'wlk', 'Upstairs':'ups', 'Downstairs':'dws',
+             'Standing':'std', 'Jogging':'jog', 'Sitting':'sit'}
+newColNames = {"x (in G\'s)":'a_x', "y (in G\'s)":'a_y', "z (in G\'s)":'a_z'}
+
+activities = os.listdir(dataDir)
+inData = []
+outData = []
+#go through each activity
+for activity in activities :
+    if activity in newLabels:
+        print('----------------')
+        print(activity)
+        print('----------------')
+        subDir = os.path.join(dataDir, activity)
+        trials = os.listdir(subDir)
+        #go through each trial for each activity
+        for trial in trials:
+            
+            #filter out weird entries in the directory
+            if 'Eli' not in trial and 'Colin' not in trial and 'Kai' not in trial:
+                continue
+            
+            if 'Colin' in trial:
+                user = 'Colin'
+            elif 'Eli' in trial:
+                user = 'Eli'
+            elif 'Kai' in trial:
+                user = 'Kai'
+            #load data and add necessary fields
+            data = pd.read_csv(os.path.join(subDir,trial,'accelerometer.csv'))
+            data['user'] = [user]*len(data)
+            data['activity'] = newLabels[activity]
+            
+            #drop timestamps and rename acceleration columns
+            data.rename(columns = newColNames, inplace= True)
+            
+            #filter out the first and last 3 seconds to ignore pulling out and putting in
+            data = data.iloc[150:-150]
+            
+            feat_mat = createFeatVects(data, feats=['a_x', 'a_y', 'a_z'],
+                                        numObs = 256, overlap = 128, dataset_name='custom',
+                                        rotate_to_zero = False)
+            
+            if 'in' in trial[-3:]:
+                print('appending',feat_mat.shape[0], 'rows to inData from', trial)
+                inData.append(feat_mat)
+            elif 'ut' in trial[-3:]:
+                print('appending',feat_mat.shape[0], 'rows to outData from', trial)
+                outData.append(feat_mat)
+            
+inData = pd.concat(inData)
+outData = pd.concat(outData)
+
+#save data to csv
+out_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_data/Feature_Matrices/256_data/custom'
+inData.to_csv(os.path.join(out_path,'custom_FeatMat_256_in.csv'), index=False)
+outData.to_csv(os.path.join(out_path,'custom_FeatMat_256_out.csv'), index=False)
+
+for user in inData.user.unique():
+    print('--------------------------------')
+    print(user)
+    print('--------------------------------')
+    for activity in inData.label.unique():
+        
+        inData_=inData[inData.label==activity]
+        outData_=outData[outData.label==activity]
+        print('---------')
+        
+        acc_in = getAcc(inData_[inData_.user==user])
+        acc_out = getAcc(outData_[outData_.user==user])
+        
+        print('--')
+        print('avg',activity,'acceleration')
+        print('in:',np.mean(acc_in,axis=0), '(norm:',np.linalg.norm(np.mean(acc_in,axis=0)),')')
+        print('out:',np.mean(acc_out,axis=0),'(norm:',np.linalg.norm(np.mean(acc_out,axis=0)),')')
+        
+        print('--')
+        print('std',activity,'acceleration')
+        print('in:',np.std(acc_in,axis=0), '(norm:',np.linalg.norm(np.std(acc_in,axis=0)),')')
+        print('out:',np.std(acc_out,axis=0),'(norm:',np.linalg.norm(np.std(acc_out,axis=0)),')')
+        
+        print('--')
+        print('avg',activity,'acceleration mag')
+        print('in:',np.mean(np.linalg.norm(acc_in,axis=1)),'(std:',np.std(np.linalg.norm(acc_in,axis=1)),')')
+        print('out:',np.mean(np.linalg.norm(acc_out,axis=1)),'(std:',np.std(np.linalg.norm(acc_out,axis=1)),')')
+              
+        print('--')
+        print(activity,'L1 acceleration norms')
+        print('in:',np.mean(np.abs(acc_in),axis=0))
+        print('out:',np.mean(np.abs(acc_out),axis=0))
+        
+                        
+            

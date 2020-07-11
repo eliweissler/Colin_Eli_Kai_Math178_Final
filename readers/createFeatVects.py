@@ -15,7 +15,7 @@ import pickle
 
 
     
-def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None,
+def createFeatVects(data, feats, numObs, overlap, dataset_name, 
                     rotate_to_zero = False):
     """
     Creates a feature matrix from a raw observation csv
@@ -92,13 +92,12 @@ def createFeatVects(data, feats, numObs, overlap, dataset_name, save_path = None
     actFeatureMatrix['label'] = actFeatureLabels 
     
     # fix gravity in the createFeatVectors file for motion sense.
-    allFeats = actFeatureMatrix.columns
-    accFeats = [f for f in allFeats if 'a_' in f]
-    for val in accFeats:
-        actFeatureMatrix[val] += actFeatureMatrix[val.replace('a','g')]
-    
-    if save_path is not None:
-        actFeatureMatrix.to_csv(os.path.join(output_path, saveLabels[d_set]+"_featureMat.csv"), index=False) 
+    if dataset_name == 'MotionSense':
+        allFeats = actFeatureMatrix.columns
+        accFeats = [f for f in allFeats if 'a_' in f]
+        for val in accFeats:
+            actFeatureMatrix[val] += actFeatureMatrix[val.replace('a','g')]
+        
     
     return actFeatureMatrix
 
