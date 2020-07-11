@@ -5,7 +5,103 @@ import scipy
 from sklearn.decomposition import PCA
 from classifiers.featMatHelpers import getAcc
 
-def spline_accelerometer(feature_vec):
+# def spline_accelerometer(feature_vec):
+#     """
+#     Given a 128 segment accelerometer feature vector separated
+#     as [a_x1, a_y1, a_z1, a_x2, ... , a_z128]
+
+#     we fit the data with a univariate spline
+#     """
+
+#     xline = feature_vec[0::3]
+#     yline = feature_vec[1::3]
+#     zline = feature_vec[2::3]
+
+
+#     #spline the accleration, aka alpha'
+#     num = len(feature_vec)/3
+#     t = np.arange(0,num) #define time interval
+#     a_x_spline = IUS(t, xline)
+#     a_y_spline = IUS(t, yline)
+#     a_z_spline = IUS(t, zline)
+
+#     return a_x_spline, a_y_spline, a_z_spline
+
+
+
+# def calc_torsion(feature_vec):
+#     """
+#     given accelerometer feature vector (which we call alpha prime),
+#     calculate the torsion at each 0.02 second time interval
+
+#     by finding first and second derivatives of accelerometer data
+#     """
+#     #get alpha'
+#     a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
+
+#     #find alpha''
+#     ap_x_spline = a_x_spline.derivative()
+#     ap_y_spline = a_y_spline.derivative()
+#     ap_z_spline = a_z_spline.derivative()
+
+#     #find alpha'''
+#     app_x_spline = ap_x_spline.derivative()
+#     app_y_spline = ap_y_spline.derivative()
+#     app_z_spline = ap_z_spline.derivative()
+
+#     #define time interval
+#     num = len(feature_vec)/3
+#     t = np.arange(0,num) #define time interval
+
+#     #calculate torsion
+#     torL = []
+#     for tt in t:
+#         #calculate vector
+#         v_1 = np.array([a_x_spline(tt), a_y_spline(tt), a_z_spline(tt)])
+#         v_2 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+#         v_3 = np.array([app_x_spline(tt), app_y_spline(tt), app_z_spline(tt)])
+
+#         #calculate the torsion and shove it in list
+#         torsion = 3 * np.linalg.det([v_1, v_2, v_3])  \
+#                    /np.linalg.norm(np.cross(v_1, v_2))**2
+#         torL += [torsion]
+#     return torL
+
+
+
+# def calc_curvature(feature_vec):
+#     """
+#     given accelerometer feature vector (which we call alpha prime),
+#     calculate the curvature at each 0.02 second time interval
+
+#     by finding first and second derivatives of accelerometer data
+#     """
+#     #get alpha'
+#     a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
+
+#     #find alpha''
+#     ap_x_spline = a_x_spline.derivative()
+#     ap_y_spline = a_y_spline.derivative()
+#     ap_z_spline = a_z_spline.derivative()
+
+#     #define time interval
+#     num = len(feature_vec)/3
+#     t = np.arange(0,num) #define time interval
+#     #calculate curvature
+#     curvL = []
+#     for tt in t:
+#         #calculate vector
+#         v_1 = np.array([a_x_spline(tt), a_y_spline(tt), a_z_spline(tt)])
+#         v_2 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+
+#         #calculate curvature
+#         curvature = 2 * np.linalg.norm(np.cross(v_1, v_2)) \
+#                     /np.linalg.norm(v_1)**(3/2)
+#         curvL += [curvature]
+
+#     return curvL
+
+def spline_accelerometer(feature_vec, kk = 4):
     """
     Given a 128 segment accelerometer feature vector separated
     as [a_x1, a_y1, a_z1, a_x2, ... , a_z128]
@@ -13,20 +109,23 @@ def spline_accelerometer(feature_vec):
     we fit the data with a univariate spline
     """
 
-    xline = feature_vec[0::3]
-    yline = feature_vec[1::3]
-    zline = feature_vec[2::3]
+    xline = feature_vec[0::3]#*np.hanning(len(feature_vec)//3)
+#     xline = np.real(np.fft.ifft(np.pad(np.fft.fft(xline)[103:-103],103)))
+    
+    yline = feature_vec[1::3]#*np.hanning(len(feature_vec)//3)
+#     yline = np.real(np.fft.ifft(np.pad(np.fft.fft(yline)[103:-103],103)))
 
+    zline = feature_vec[2::3]#*np.hanning(len(feature_vec)//3)
+#     zline = np.real(np.fft.ifft(np.pad(np.fft.fft(zline)[103:-103],103)))
 
     #spline the accleration, aka alpha'
     num = len(feature_vec)/3
     t = np.arange(0,num) #define time interval
-    a_x_spline = IUS(t, xline)
-    a_y_spline = IUS(t, yline)
-    a_z_spline = IUS(t, zline)
+    a_x_spline = IUS(t, xline, k = kk)
+    a_y_spline = IUS(t, yline, k = kk)
+    a_z_spline = IUS(t, zline, k = kk)
 
     return a_x_spline, a_y_spline, a_z_spline
-
 
 
 def calc_torsion(feature_vec):
@@ -36,18 +135,23 @@ def calc_torsion(feature_vec):
 
     by finding first and second derivatives of accelerometer data
     """
-    #get alpha'
+    #get alpha
     a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
 
-    #find alpha''
+    #find alpha'
     ap_x_spline = a_x_spline.derivative()
     ap_y_spline = a_y_spline.derivative()
     ap_z_spline = a_z_spline.derivative()
 
-    #find alpha'''
+    #find alpha''
     app_x_spline = ap_x_spline.derivative()
     app_y_spline = ap_y_spline.derivative()
     app_z_spline = ap_z_spline.derivative()
+    
+    #find alpha'''
+    appp_x_spline = app_x_spline.derivative()
+    appp_y_spline = app_y_spline.derivative()
+    appp_z_spline = app_z_spline.derivative()
 
     #define time interval
     num = len(feature_vec)/3
@@ -57,13 +161,15 @@ def calc_torsion(feature_vec):
     torL = []
     for tt in t:
         #calculate vector
-        v_1 = np.array([a_x_spline(tt), a_y_spline(tt), a_z_spline(tt)])
-        v_2 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
-        v_3 = np.array([app_x_spline(tt), app_y_spline(tt), app_z_spline(tt)])
+        v_1 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+        v_2 = np.array([app_x_spline(tt), app_y_spline(tt), app_z_spline(tt)])
+        v_3 = np.array([appp_x_spline(tt), appp_y_spline(tt), appp_z_spline(tt)])
 
         #calculate the torsion and shove it in list
-        torsion = 3 * np.linalg.det([v_1, v_2, v_3])  \
-                   /np.linalg.norm(np.cross(v_1, v_2))
+        num = np.linalg.det([v_1, v_2, v_3])  
+        denom = np.linalg.norm(np.cross(v_1, v_2))**2
+        torsion = num/denom
+#         print(denom)
         torL += [torsion]
     return torL
 
@@ -76,13 +182,23 @@ def calc_curvature(feature_vec):
 
     by finding first and second derivatives of accelerometer data
     """
-    #get alpha'
+    #get alpha
     a_x_spline, a_y_spline, a_z_spline = spline_accelerometer(feature_vec)
 
-    #find alpha''
+    #find alpha'
     ap_x_spline = a_x_spline.derivative()
     ap_y_spline = a_y_spline.derivative()
     ap_z_spline = a_z_spline.derivative()
+
+    #find alpha''
+    app_x_spline = ap_x_spline.derivative()
+    app_y_spline = ap_y_spline.derivative()
+    app_z_spline = ap_z_spline.derivative()
+    
+    #find alpha'''
+    appp_x_spline = app_x_spline.derivative()
+    appp_y_spline = app_y_spline.derivative()
+    appp_z_spline = app_z_spline.derivative()
 
     #define time interval
     num = len(feature_vec)/3
@@ -91,15 +207,19 @@ def calc_curvature(feature_vec):
     curvL = []
     for tt in t:
         #calculate vector
-        v_1 = np.array([a_x_spline(tt), a_y_spline(tt), a_z_spline(tt)])
-        v_2 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+        v_1 = np.array([ap_x_spline(tt), ap_y_spline(tt), ap_z_spline(tt)])
+        v_2 = np.array([app_x_spline(tt), app_y_spline(tt), app_z_spline(tt)])
 
         #calculate curvature
-        curvature = 2 * np.linalg.norm(np.cross(v_1, v_2)) \
-                    /np.linalg.norm(v_1)**(3/2)
+        num = np.linalg.norm(np.cross(v_1, v_2)) 
+        denom = np.linalg.norm(v_1)**3
+        curvature = num/denom
+#         print(denom)
         curvL += [curvature]
 
     return curvL
+
+
 
 def calc_fft(feature_vec, smooth = False):
     """
@@ -139,7 +259,7 @@ def calc_pca(feature_vec):
 
     return eigVals, eigVects
 
-def calc_manifold_feats(feature_vec, smooth = False):
+def calc_manifold_feats(feature_vec, smooth = True):
     """
 
     Parameters
@@ -158,17 +278,23 @@ def calc_manifold_feats(feature_vec, smooth = False):
     # calc torsion
     tors = calc_torsion(feature_vec)
     if smooth:
-        curv = scipy.ndimage.filters.gaussian_filter1d(curv,2)
-        tors = scipy.ndimage.filters.gaussian_filter1d(tors,2)
-
+        curv = scipy.ndimage.filters.gaussian_filter1d(curv,5)
+        curv -= np.mean(curv)
+        tors = scipy.ndimage.filters.gaussian_filter1d(tors,5)
+        tors -= np.mean(tors)
+    hann = np.hanning(len(curv))
     # do FFT magnitude, only need to save the first half, since fft is symmetric
-    curvFFT = np.abs(np.fft.fft(curv))[:int(len(curv)/2)]
-    torsFFT = np.abs(np.fft.fft(tors))[:int(len(tors)/2)]
-
-    # new row will be ordered as the curvature, torsion, curv fft, tors fft
-    row = np.concatenate([curvFFT,torsFFT])
+    curvFFT = np.abs(np.fft.fft(hann*curv))[:25]
+    torsFFT = np.abs(np.fft.fft(hann*tors))[:25]
+    normCurv = max(curvFFT)
+    curvFFT /= normCurv
+    normTors = max(torsFFT)
+    torsFFT /= normTors
     
-    return row
+    # new row will be ordered as the curv fft, tors fft
+    row = np.concatenate([curvFFT,torsFFT])
+    # add on the max of the ffts that we normalized by
+    return np.append(row, [normCurv,normTors])
                    
 def hand_crafted(feature_vec):
     """
@@ -215,7 +341,7 @@ def hand_crafted(feature_vec):
                     absAvgAcc + absAvgAccNorm + absStdAcc + absStdAccNorm +
                     [avgMag,stdMag])
     
-def all_feats(feature_vec, smooth = False):
+def all_feats(feature_vec, smooth = True):
     """
     calculate all of our features
 

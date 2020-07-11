@@ -26,22 +26,20 @@ for csv in csvList:
     newDf = allFeats.apply(pd.Series)
     
     # make the columns based on the features
-    dataSize = len(cols)//3
-    fftSize = dataSize//2
+    # dataSize = len(cols)//3
+    fftSize = 25
     # newCols = ['curv_' + str(i) for i in range(dataSize)]
     # newCols += ['tors_' + str(i) for i in range(dataSize)]
     newCols = []
     newCols += ['curvFFT_' + str(i) for i in range(fftSize)]
     newCols += ['torsFFT_' + str(i) for i in range(fftSize)]
+    newCols += ['curvFFTMax', 'torsFFTMax']
     newCols += ['avgAcc_x','avgAcc_y','avgAcc_z', 
                 'stdAcc_x','stdAcc_y','stdAcc_z', 
                 'absAvgAcc_x', 'absAvgAcc_y', 'absAvgAcc_z', 
                 'avgMag','stdMag']
     
     newDf.columns = newCols
-    
-    # do the handcrafted features here
-    
     
     # add back in the dataset, user, and label info
     newDf[['dataset', 'user', 'label']] = df[['dataset', 'user', 'label']]
