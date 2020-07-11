@@ -62,7 +62,7 @@ def calc_torsion(feature_vec):
 
         #calculate the torsion and shove it in list
         torsion = 3 * np.linalg.det([v_1, v_2, v_3])  \
-                   /np.linalg.norm(np.cross(v_1, v_2))
+                   /np.linalg.norm(np.cross(v_1, v_2))**2
         torL += [torsion]
     return torL
 
