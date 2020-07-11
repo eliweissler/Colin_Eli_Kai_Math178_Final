@@ -3,6 +3,7 @@ import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline as IUS
 import scipy
 from sklearn.decomposition import PCA
+from classifiers.featMatHelpers import getAcc
 
 def spline_accelerometer(feature_vec):
     """
@@ -183,28 +184,36 @@ def hand_crafted(feature_vec):
     None.
 
     """
-    ax = feature_vec[0::3]
-    ay = feature_vec[1::3]
-    az = feature_vec[2::3]
+    #n x [ax,ay,az]
+    acc = getAcc(feature_vec)
+    ax = acc[:,0]
+    ay = acc[:,1]
+    az = acc[:,2]
     # average acceleration 
     avgAcc = [ax.mean(),ay.mean(),az.mean()]
     # std of acceleration 
     stdAcc = [ax.std(),ay.std(),az.std()]
+    #norm of each vector
+    avgAccNorm = [np.linalg.norm(avgAcc)]
+    stdAccNorm = [np.linalg.norm(stdAcc)]
     
     # do magnitude calculations
-    # create array of n x [ax,ay,az] for magnitude of the vector
-    arr = np.array([ax,ay,az]).T
-    n = arr.shape[0]
-    magnitude = np.linalg.norm(arr,axis =1)
+    # create array of  for magnitude of the vector
+    magnitude = np.linalg.norm(acc,axis =1)
     
     # avgMag 
-    avgMag = magnitude.sum()/n
+    avgMag = magnitude.mean()
     stdMag = magnitude.std()
     
     # do absolute mean of acceleration for each
-    absAvgAcc = [ax.abs().mean(),ay.abs().mean(),az.abs().mean()]
+    absAvgAcc = [np.mean(np.abs(ax)),np.mean(np.abs(ay)),np.mean(np.abs(az))]
+    absAvgAccNorm = [np.linalg.norm(absAvgAcc)]
+    absStdAcc = [np.std(np.abs(ax)),np.std(np.abs(ay)),np.std(np.abs(az))]
+    absStdAccNorm = [np.linalg.norm(absStdAcc)]
     
-    return np.array(avgAcc + stdAcc + absAvgAcc + [avgMag,stdMag])
+    return np.array(avgAcc + avgAccNorm + stdAcc + stdAccNorm +
+                    absAvgAcc + absAvgAccNorm + absStdAcc + absStdAccNorm +
+                    [avgMag,stdMag])
     
 def all_feats(feature_vec, smooth = False):
     """
