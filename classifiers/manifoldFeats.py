@@ -34,10 +34,8 @@ for csv in csvList:
     newCols += ['curvFFT_' + str(i) for i in range(fftSize)]
     newCols += ['torsFFT_' + str(i) for i in range(fftSize)]
     newCols += ['curvFFTMax', 'torsFFTMax']
-    newCols += ['avgAcc_x','avgAcc_y','avgAcc_z', 
-                'stdAcc_x','stdAcc_y','stdAcc_z', 
-                'absAvgAcc_x', 'absAvgAcc_y', 'absAvgAcc_z', 
-                'avgMag','stdMag']
+    newCols += ['absAvgAcc_x', 'absAvgAcc_y', 'absAvgAcc_z', 
+                'avgNormAcc','stdNormAcc']
     
     newDf.columns = newCols
     

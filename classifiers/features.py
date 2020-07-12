@@ -311,17 +311,23 @@ def hand_crafted(feature_vec):
 
     """
     #n x [ax,ay,az]
-    acc = getAcc(feature_vec)
-    ax = acc[:,0]
-    ay = acc[:,1]
-    az = acc[:,2]
+    
+    ax = feature_vec[0::3]
+    ay = feature_vec[1::3]
+    az = feature_vec[2::3]
+    acc = np.hstack((ax.to_numpy().reshape(-1,1),ay.to_numpy().reshape(-1,1),az.to_numpy().reshape(-1,1)))
     # average acceleration 
     avgAcc = [ax.mean(),ay.mean(),az.mean()]
     # std of acceleration 
     stdAcc = [ax.std(),ay.std(),az.std()]
     #norm of each vector
-    avgAccNorm = [np.linalg.norm(avgAcc)]
+    avgAccNorm = [np.abs(1-np.linalg.norm(avgAcc))]
     stdAccNorm = [np.linalg.norm(stdAcc)]
+    
+    #stats on the acceleration norms per timestep
+    norms = np.linalg.norm(acc-np.array(avgAcc), axis=1)
+    avgNormAcc = np.mean(norms)
+    stdNormAcc = np.std(norms)
     
     # do magnitude calculations
     # create array of  for magnitude of the vector
@@ -337,9 +343,10 @@ def hand_crafted(feature_vec):
     absStdAcc = [np.std(np.abs(ax)),np.std(np.abs(ay)),np.std(np.abs(az))]
     absStdAccNorm = [np.linalg.norm(absStdAcc)]
     
-    return np.array(avgAcc + avgAccNorm + stdAcc + stdAccNorm +
-                    absAvgAcc + absAvgAccNorm + absStdAcc + absStdAccNorm +
-                    [avgMag,stdMag])
+    # return np.array(avgAcc + avgAccNorm + stdAcc + stdAccNorm +
+    #                 absAvgAcc + absAvgAccNorm + absStdAcc + absStdAccNorm +
+    #                 [avgMag,stdMag,avgNormAcc,stdNormAcc])
+    return np.array(absAvgAcc + [avgNormAcc,stdNormAcc])
     
 def all_feats(feature_vec, smooth = True):
     """
