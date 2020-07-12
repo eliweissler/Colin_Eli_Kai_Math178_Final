@@ -70,38 +70,42 @@ out_path = '/Volumes/GoogleDrive/My Drive/Harvey Mudd/Work/Summer 2020/project_d
 inData.to_csv(os.path.join(out_path,'custom_FeatMat_256_in.csv'), index=False)
 outData.to_csv(os.path.join(out_path,'custom_FeatMat_256_out.csv'), index=False)
 
-for user in inData.user.unique():
-    print('--------------------------------')
-    print(user)
-    print('--------------------------------')
-    for activity in inData.label.unique():
+print('---------------------')
+print('in data has len', len(inData))
+print('out data has len', len(outData))
+
+# for user in inData.user.unique():
+#     print('--------------------------------')
+#     print(user)
+#     print('--------------------------------')
+#     for activity in inData.label.unique():
         
-        inData_=inData[inData.label==activity]
-        outData_=outData[outData.label==activity]
-        print('---------')
+#         inData_=inData[inData.label==activity]
+#         outData_=outData[outData.label==activity]
+#         print('---------')
         
-        acc_in = getAcc(inData_[inData_.user==user])
-        acc_out = getAcc(outData_[outData_.user==user])
+#         acc_in = getAcc(inData_[inData_.user==user])
+#         acc_out = getAcc(outData_[outData_.user==user])
         
-        print('--')
-        print('avg',activity,'acceleration')
-        print('in:',np.mean(acc_in,axis=0), '(norm:',np.linalg.norm(np.mean(acc_in,axis=0)),')')
-        print('out:',np.mean(acc_out,axis=0),'(norm:',np.linalg.norm(np.mean(acc_out,axis=0)),')')
+#         print('--')
+#         print('avg',activity,'acceleration')
+#         print('in:',np.mean(acc_in,axis=0), '(norm:',np.linalg.norm(np.mean(acc_in,axis=0)),')')
+#         print('out:',np.mean(acc_out,axis=0),'(norm:',np.linalg.norm(np.mean(acc_out,axis=0)),')')
         
-        print('--')
-        print('std',activity,'acceleration')
-        print('in:',np.std(acc_in,axis=0), '(norm:',np.linalg.norm(np.std(acc_in,axis=0)),')')
-        print('out:',np.std(acc_out,axis=0),'(norm:',np.linalg.norm(np.std(acc_out,axis=0)),')')
+#         print('--')
+#         print('std',activity,'acceleration')
+#         print('in:',np.std(acc_in,axis=0), '(norm:',np.linalg.norm(np.std(acc_in,axis=0)),')')
+#         print('out:',np.std(acc_out,axis=0),'(norm:',np.linalg.norm(np.std(acc_out,axis=0)),')')
         
-        print('--')
-        print('avg',activity,'acceleration mag')
-        print('in:',np.mean(np.linalg.norm(acc_in,axis=1)),'(std:',np.std(np.linalg.norm(acc_in,axis=1)),')')
-        print('out:',np.mean(np.linalg.norm(acc_out,axis=1)),'(std:',np.std(np.linalg.norm(acc_out,axis=1)),')')
+#         print('--')
+#         print('avg',activity,'acceleration mag')
+#         print('in:',np.mean(np.linalg.norm(acc_in,axis=1)),'(std:',np.std(np.linalg.norm(acc_in,axis=1)),')')
+#         print('out:',np.mean(np.linalg.norm(acc_out,axis=1)),'(std:',np.std(np.linalg.norm(acc_out,axis=1)),')')
               
-        print('--')
-        print(activity,'L1 acceleration norms')
-        print('in:',np.mean(np.abs(acc_in),axis=0))
-        print('out:',np.mean(np.abs(acc_out),axis=0))
+#         print('--')
+#         print(activity,'L1 acceleration norms')
+#         print('in:',np.mean(np.abs(acc_in),axis=0))
+#         print('out:',np.mean(np.abs(acc_out),axis=0))
         
                         
             
